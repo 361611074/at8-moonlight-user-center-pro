@@ -1,6 +1,6 @@
 # 漫步白月光用户中心 Pro (moonlight-user-center-pro)
 
-「漫步白月光用户中心」（Free 版）的商业化扩展插件。安装目录 `pro/moonlight-user-center-pro/`，上传后作为**独立插件**在 WordPress 后台启用。
+「漫步白月光用户中心」（Free 版）的商业化扩展插件。本仓库即插件根目录，上传后作为**独立插件**在 WordPress 后台启用；需先安装并启用 Free 版 moonlight-user-center。
 
 - 版本：2.0.0
 - 授权：GPL-2.0-or-later
@@ -25,7 +25,7 @@
 
 ## 安装
 
-1. 将 `pro/moonlight-user-center-pro/` 上传至 `wp-content/plugins/`；
+1. 将本仓库内容上传至 `wp-content/plugins/moonlight-user-center-pro/`；
 2. 确认「漫步白月光用户中心」已启用；
 3. 启用本插件，进入「用户中心 → License（Pro）」输入 License Key 激活。
 
