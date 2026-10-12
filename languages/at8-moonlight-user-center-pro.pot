@@ -1,0 +1,1228 @@
+# Copyright (C) 2026 漫步白月光
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: AT8 Moonlight User Center Pro 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/at8-moonlight-user-center-pro\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-12T11:09:59+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: at8-moonlight-user-center-pro\n"
+
+#. Plugin Name of the plugin
+#: at8-moonlight-user-center-pro.php
+msgid "AT8 Moonlight User Center Pro"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: at8-moonlight-user-center-pro.php
+msgid "https://www.at8.fun/"
+msgstr ""
+
+#. Description of the plugin
+#: at8-moonlight-user-center-pro.php
+msgid "Commercial add-on for AT8 Moonlight User Center: membership levels, paywall, hidden content, membership payments (bank transfer, PayPal, Stripe), demo videos, downloadable materials, purchases, social login and Elementor widgets. Requires the free plugin to be active."
+msgstr ""
+
+#. Author of the plugin
+#: at8-moonlight-user-center-pro.php
+#: includes/class-elementor.php:42
+msgid "漫步白月光"
+msgstr ""
+
+#: at8-moonlight-user-center-pro.php:87
+msgid "AT8 Moonlight User Center Pro requires the free plugin AT8 Moonlight User Center to be installed and active."
+msgstr ""
+
+#: includes/class-assets.php:101
+msgid "Operation failed."
+msgstr ""
+
+#: includes/class-assets.php:102
+msgid "Processing…"
+msgstr ""
+
+#: includes/class-assets.php:204
+msgid "Hidden Content"
+msgstr ""
+
+#: includes/class-assets.php:205
+msgid "Choose a visibility rule…"
+msgstr ""
+
+#: includes/class-elementor-widgets.php:32
+msgid "内容"
+msgstr ""
+
+#: includes/class-elementor-widgets.php:35
+msgid "该组件直接渲染对应前端表单，样式由主题配合。"
+msgstr ""
+
+#: includes/class-elementor-widgets.php:55
+msgid "漫步白月光 · 登录表单"
+msgstr ""
+
+#: includes/class-elementor-widgets.php:73
+msgid "漫步白月光 · 注册表单"
+msgstr ""
+
+#: includes/class-elementor-widgets.php:91
+msgid "漫步白月光 · 用户资料卡"
+msgstr ""
+
+#: includes/class-hidecontent.php:236
+msgid "Log In"
+msgstr ""
+
+#: includes/class-hidecontent.php:238
+msgid "Log in to view the content below."
+msgstr ""
+
+#: includes/class-hidecontent.php:244
+msgid "Upgrade Membership"
+msgstr ""
+
+#: includes/class-hidecontent.php:246
+msgid "This content is for Monthly members and above."
+msgstr ""
+
+#: includes/class-hidecontent.php:259
+msgid "Buy Now"
+msgstr ""
+
+#: includes/class-hidecontent.php:261
+msgid "Purchase to view the content below."
+msgstr ""
+
+#: includes/class-hidecontent.php:267
+msgid "Post a Comment"
+msgstr ""
+
+#: includes/class-hidecontent.php:269
+msgid "Your comment must be approved before the content is revealed."
+msgstr ""
+
+#: includes/class-license.php:198
+#: includes/class-license.php:199
+#: includes/class-license.php:230
+msgid "License（Pro）"
+msgstr ""
+
+#: includes/class-license.php:221
+msgid "Active"
+msgstr ""
+
+#: includes/class-license.php:222
+msgid "Active (server unreachable, grace period)"
+msgstr ""
+
+#: includes/class-license.php:223
+msgid "Expired"
+msgstr ""
+
+#: includes/class-license.php:224
+msgid "Revoked"
+msgstr ""
+
+#: includes/class-license.php:225
+msgid "Invalid key"
+msgstr ""
+
+#: includes/class-license.php:226
+msgid "Not activated"
+msgstr ""
+
+#: includes/class-license.php:235
+msgid "Product"
+msgstr ""
+
+#: includes/class-license.php:239
+msgid "State"
+msgstr ""
+
+#: includes/class-license.php:243
+msgid "License Key"
+msgstr ""
+
+#: includes/class-license.php:247
+msgid "Expires"
+msgstr ""
+
+#: includes/class-license.php:253
+msgid "Never"
+msgstr ""
+
+#: includes/class-license.php:259
+msgid "Bound site"
+msgstr ""
+
+#: includes/class-license.php:263
+#: includes/class-settings.php:395
+msgid "Mode"
+msgstr ""
+
+#: includes/class-license.php:267
+msgid "License server"
+msgstr ""
+
+#: includes/class-license.php:270
+msgid "Offline (signed key)"
+msgstr ""
+
+#: includes/class-license.php:278
+msgid "Activate License"
+msgstr ""
+
+#: includes/class-license.php:284
+msgid "Activate"
+msgstr ""
+
+#: includes/class-license.php:286
+msgid "Enter the key you received on purchase. The key binds to this site; deactivate before migrating to another domain."
+msgstr ""
+
+#: includes/class-license.php:290
+msgid "Deactivate License"
+msgstr ""
+
+#: includes/class-license.php:291
+msgid "Deactivating disables every Pro feature immediately. Continue?"
+msgstr ""
+
+#: includes/class-license.php:294
+msgid "Deactivate"
+msgstr ""
+
+#: includes/class-license.php:331
+#: includes/class-license.php:372
+msgid "Permission denied or security check failed."
+msgstr ""
+
+#: includes/class-license.php:339
+msgid "Please enter a license key."
+msgstr ""
+
+#: includes/class-license.php:349
+msgid "License activated. Pro features are now available."
+msgstr ""
+
+#: includes/class-license.php:384
+msgid "License deactivated. Pro features are disabled."
+msgstr ""
+
+#: includes/class-license.php:409
+#: includes/class-license.php:522
+#: includes/class-license.php:529
+msgid "The key format is not recognised."
+msgstr ""
+
+#: includes/class-license.php:441
+msgid "This key belongs to a different product."
+msgstr ""
+
+#: includes/class-license.php:445
+msgid "This key has expired."
+msgstr ""
+
+#: includes/class-license.php:535
+msgid "The key signature is invalid."
+msgstr ""
+
+#: includes/class-license.php:541
+#: includes/class-license.php:554
+msgid "The key payload could not be read."
+msgstr ""
+
+#: includes/class-license.php:616
+msgid "The license server URL is not valid."
+msgstr ""
+
+#: includes/class-license.php:638
+msgid "The license server could not be reached."
+msgstr ""
+
+#: includes/class-license.php:644
+msgid "The license server rejected the request."
+msgstr ""
+
+#: includes/class-license.php:650
+msgid "The license server sent an unreadable response."
+msgstr ""
+
+#: includes/class-material.php:113
+msgid "權限不足，無法檢視此教材。"
+msgstr ""
+
+#: includes/class-material.php:121
+msgid "工作紙 / 教材"
+msgstr ""
+
+#: includes/class-material.php:122
+#: includes/class-material.php:310
+msgid "教材"
+msgstr ""
+
+#: includes/class-material.php:123
+msgid "新建教材"
+msgstr ""
+
+#: includes/class-material.php:124
+msgid "新增教材"
+msgstr ""
+
+#: includes/class-material.php:125
+msgid "編輯教材"
+msgstr ""
+
+#: includes/class-material.php:154
+msgid "教材設定"
+msgstr ""
+
+#: includes/class-material.php:171
+#: includes/class-video.php:164
+msgid "公開（免費）"
+msgstr ""
+
+#: includes/class-material.php:175
+#: includes/class-video.php:168
+msgid "最低訪問等級"
+msgstr ""
+
+#: includes/class-material.php:185
+msgid "文件網址（PDF / ZIP）"
+msgstr ""
+
+#: includes/class-material.php:189
+msgid "每用戶下載次數上限（0 = 不限）"
+msgstr ""
+
+#: includes/class-material.php:277
+msgid "下載 PDF / 工作紙"
+msgstr ""
+
+#: includes/class-material.php:281
+msgid "登入後下載"
+msgstr ""
+
+#: includes/class-material.php:289
+msgid "暫無可下載的教材。"
+msgstr ""
+
+#: includes/class-material.php:302
+msgid "請先登入。"
+msgstr ""
+
+#: includes/class-material.php:310
+msgid "等級"
+msgstr ""
+
+#: includes/class-material.php:310
+msgid "操作"
+msgstr ""
+
+#: includes/class-material.php:323
+msgid "下載"
+msgstr ""
+
+#. translators: 1: remaining download count, 2: total allowed downloads.
+#: includes/class-material.php:327
+#, php-format
+msgid "剩餘 %1$s / %2$s 次"
+msgstr ""
+
+#: includes/class-material.php:329
+msgid "不限次"
+msgstr ""
+
+#: includes/class-material.php:337
+msgid "暫無教材可下載。"
+msgstr ""
+
+#: includes/class-material.php:355
+msgid "安全校驗失敗。"
+msgstr ""
+
+#: includes/class-material.php:358
+msgid "教材不存在。"
+msgstr ""
+
+#: includes/class-material.php:362
+msgid "權限不足，無法下載。"
+msgstr ""
+
+#: includes/class-material.php:367
+msgid "已達下載次數上限。"
+msgstr ""
+
+#: includes/class-material.php:371
+msgid "文件未配置。"
+msgstr ""
+
+#: includes/class-membership-tab.php:58
+msgid "Membership"
+msgstr ""
+
+#: includes/class-membership-tab.php:85
+#: includes/class-membership-tab.php:86
+msgid "Buy / Upgrade Membership"
+msgstr ""
+
+#: includes/class-membership.php:356
+msgid "会员等级"
+msgstr ""
+
+#: includes/class-membership.php:359
+msgid "等级"
+msgstr ""
+
+#: includes/class-membership.php:363
+msgid "（無會員等級）"
+msgstr ""
+
+#: includes/class-membership.php:371
+msgid "可选等级由后台「会员等级定义」配置。"
+msgstr ""
+
+#: includes/class-membership.php:375
+msgid "到期日"
+msgstr ""
+
+#: includes/class-membership.php:380
+msgid "永不过期"
+msgstr ""
+
+#: includes/class-membership.php:382
+msgid "勾选「永不过期」时忽略日期；不勾选则到期时间为该日 23:59（站点时区）。"
+msgstr ""
+
+#: includes/class-oauth.php:42
+msgid "微信"
+msgstr ""
+
+#: includes/class-oauth.php:53
+msgid "QQ"
+msgstr ""
+
+#: includes/class-oauth.php:64
+msgid "GitHub"
+msgstr ""
+
+#: includes/class-oauth.php:75
+msgid "Google"
+msgstr ""
+
+#: includes/class-oauth.php:87
+msgid "Apple"
+msgstr ""
+
+#: includes/class-oauth.php:233
+msgid "或使用第三方账号登录"
+msgstr ""
+
+#. translators: %s: social network name (WeChat, QQ, Weibo, ...).
+#: includes/class-oauth.php:239
+#, php-format
+msgid "使用 %s 登录"
+msgstr ""
+
+#: includes/class-oauth.php:272
+msgid "不支持的登录方式。"
+msgstr ""
+
+#: includes/class-oauth.php:278
+msgid "已取消授权，请重试或使用其他方式登录。"
+msgstr ""
+
+#: includes/class-oauth.php:287
+msgid "安全校验失败（state 无效），请重试。"
+msgstr ""
+
+#: includes/class-oauth.php:294
+msgid "安全校验失败（state 不匹配），请重试。"
+msgstr ""
+
+#: includes/class-oauth.php:300
+msgid "安全校验失败（登录身份不一致），请重试。"
+msgstr ""
+
+#: includes/class-oauth.php:363
+msgid "换取令牌失败。"
+msgstr ""
+
+#: includes/class-oauth.php:381
+msgid "获取微信 openid 失败。"
+msgstr ""
+
+#: includes/class-oauth.php:400
+msgid "获取 QQ openid 失败。"
+msgstr ""
+
+#: includes/class-oauth.php:460
+msgid "获取 Apple 用户信息失败。"
+msgstr ""
+
+#: includes/class-oauth.php:467
+msgid "解析 Apple 身份失败。"
+msgstr ""
+
+#: includes/class-oauth.php:475
+msgid "Apple 用户"
+msgstr ""
+
+#: includes/class-oauth.php:480
+msgid "暂不支持该登录方式。"
+msgstr ""
+
+#: includes/class-oauth.php:484
+msgid "未能获取第三方用户标识。"
+msgstr ""
+
+#: includes/class-oauth.php:523
+msgid "站点已关闭注册，且未找到匹配的账号。"
+msgstr ""
+
+#: includes/class-oauth.php:580
+msgid "第三方返回数据解析失败。"
+msgstr ""
+
+#: includes/class-oauth.php:593
+msgid "Apple 令牌格式错误。"
+msgstr ""
+
+#: includes/class-oauth.php:598
+msgid "Apple 令牌算法不支持。"
+msgstr ""
+
+#: includes/class-oauth.php:602
+msgid "无法获取 Apple 公钥。"
+msgstr ""
+
+#: includes/class-oauth.php:612
+msgid "Apple 公钥不匹配。"
+msgstr ""
+
+#: includes/class-oauth.php:616
+msgid "构建 Apple 公钥失败。"
+msgstr ""
+
+#: includes/class-oauth.php:620
+msgid "加载 Apple 公钥失败。"
+msgstr ""
+
+#: includes/class-oauth.php:627
+msgid "Apple 令牌签名校验失败。"
+msgstr ""
+
+#: includes/class-oauth.php:631
+msgid "Apple 令牌解析失败。"
+msgstr ""
+
+#: includes/class-oauth.php:635
+msgid "Apple 令牌受众不符。"
+msgstr ""
+
+#: includes/class-oauth.php:638
+msgid "Apple 令牌签发方不符。"
+msgstr ""
+
+#: includes/class-oauth.php:641
+msgid "Apple 令牌已过期。"
+msgstr ""
+
+#: includes/class-payments.php:105
+#: includes/class-paypal.php:252
+msgid "訂單不存在。"
+msgstr ""
+
+#: includes/class-payments.php:108
+#: includes/class-payments.php:126
+#: includes/class-payments.php:154
+msgid "訂單已完成或已取消。"
+msgstr ""
+
+#: includes/class-payments.php:118
+msgid "付費內容訂單無效。"
+msgstr ""
+
+#: includes/class-payments.php:131
+msgid "解鎖失敗：付費內容不存在或用戶無效。"
+msgstr ""
+
+#: includes/class-payments.php:145
+msgid "會員等級不存在或用戶無效。"
+msgstr ""
+
+#: includes/class-payments.php:160
+msgid "開通失敗：用戶等級不低於目標等級。"
+msgstr ""
+
+#: includes/class-payments.php:180
+#: includes/class-payments.php:181
+#: includes/class-payments.php:182
+#: includes/class-payments.php:183
+msgid "会员订单"
+msgstr ""
+
+#: includes/class-payments.php:184
+msgid "新建订单"
+msgstr ""
+
+#: includes/class-payments.php:185
+msgid "新建会员订单"
+msgstr ""
+
+#: includes/class-payments.php:186
+msgid "新会员订单"
+msgstr ""
+
+#: includes/class-payments.php:187
+msgid "编辑会员订单"
+msgstr ""
+
+#: includes/class-payments.php:188
+#: includes/class-payments.php:189
+msgid "查看会员订单"
+msgstr ""
+
+#: includes/class-payments.php:190
+msgid "搜索会员订单"
+msgstr ""
+
+#: includes/class-payments.php:191
+msgid "暂无订单"
+msgstr ""
+
+#: includes/class-payments.php:192
+msgid "回收站中暂无订单"
+msgstr ""
+
+#: includes/class-payments.php:442
+msgid "收款資訊"
+msgstr ""
+
+#: includes/class-payments.php:461
+msgid "待確認"
+msgstr ""
+
+#: includes/class-payments.php:462
+msgid "已收款"
+msgstr ""
+
+#: includes/class-payments.php:463
+msgid "已取消"
+msgstr ""
+
+#: includes/class-payments.php:467
+msgid "用戶"
+msgstr ""
+
+#: includes/class-payments.php:469
+msgid "會員等級"
+msgstr ""
+
+#: includes/class-payments.php:474
+msgid "付費內容解鎖"
+msgstr ""
+
+#: includes/class-payments.php:480
+msgid "金額"
+msgstr ""
+
+#: includes/class-payments.php:482
+msgid "支付方式"
+msgstr ""
+
+#: includes/class-payments.php:484
+msgid "狀態"
+msgstr ""
+
+#: includes/class-payments.php:486
+msgid "已開通於"
+msgstr ""
+
+#: includes/class-payments.php:494
+msgid "確認收款並解鎖內容"
+msgstr ""
+
+#: includes/class-payments.php:494
+msgid "確認收款並開通會員"
+msgstr ""
+
+#: includes/class-payments.php:500
+msgid "取消訂單"
+msgstr ""
+
+#: includes/class-payments.php:512
+#: includes/class-payments.php:537
+msgid "權限不足或校驗失敗。"
+msgstr ""
+
+#: includes/class-payments.php:523
+msgid "已確認收款，內容已解鎖。"
+msgstr ""
+
+#: includes/class-payments.php:523
+msgid "已確認收款，會員等級開通成功。"
+msgstr ""
+
+#: includes/class-paypal.php:77
+msgid "PayPal 凭据校验失败，请检查 Client ID / Secret 与模式。"
+msgstr ""
+
+#: includes/class-paypal.php:96
+#: includes/class-stripe.php:47
+msgid "本地订单无效。"
+msgstr ""
+
+#: includes/class-paypal.php:137
+msgid "PayPal 订单创建失败。"
+msgstr ""
+
+#: includes/class-paypal.php:170
+msgid "PayPal 扣款未完成。"
+msgstr ""
+
+#: includes/class-paypal.php:192
+#: includes/class-paypal.php:214
+msgid "PayPal 支付未启用。"
+msgstr ""
+
+#: includes/class-paypal.php:204
+msgid "ok"
+msgstr ""
+
+#: includes/class-paypal.php:229
+msgid "PayPal 订单与本地订单不匹配。"
+msgstr ""
+
+#: includes/class-paypal.php:233
+msgid "付款金额与订单金额不一致，请联系管理员核实。"
+msgstr ""
+
+#: includes/class-paypal.php:241
+msgid "付款成功，內容已解鎖。"
+msgstr ""
+
+#: includes/class-paypal.php:242
+msgid "付款成功，會員等級已開通。"
+msgstr ""
+
+#: includes/class-paypal.php:255
+msgid "無權操作該訂單。"
+msgstr ""
+
+#: includes/class-paypal.php:258
+msgid "訂單狀態已變更，請刷新頁面。"
+msgstr ""
+
+#: includes/class-paypal.php:261
+msgid "訂單支付方式不是 PayPal。"
+msgstr ""
+
+#: includes/class-purchases.php:38
+msgid "Purchases"
+msgstr ""
+
+#: includes/class-purchases.php:91
+msgid "Please log in first to view your purchases."
+msgstr ""
+
+#: includes/class-purchases.php:99
+msgid "Item"
+msgstr ""
+
+#: includes/class-purchases.php:100
+#: templates/membership-purchase.php:87
+msgid "Amount"
+msgstr ""
+
+#: includes/class-purchases.php:101
+#: templates/account-membership.php:73
+#: templates/membership-purchase.php:88
+msgid "Status"
+msgstr ""
+
+#: includes/class-purchases.php:102
+#: templates/membership-purchase.php:89
+msgid "Date"
+msgstr ""
+
+#: includes/class-purchases.php:106
+#: templates/membership-purchase.php:95
+msgid "Pending"
+msgstr ""
+
+#: includes/class-purchases.php:107
+#: templates/membership-purchase.php:96
+msgid "Paid"
+msgstr ""
+
+#: includes/class-purchases.php:108
+#: templates/membership-purchase.php:97
+msgid "Cancelled"
+msgstr ""
+
+#: includes/class-purchases.php:120
+msgid "You have no purchases yet."
+msgstr ""
+
+#: includes/class-settings.php:73
+#: includes/class-settings.php:544
+msgid "User Center Pro Settings"
+msgstr ""
+
+#: includes/class-settings.php:74
+#: includes/class-settings.php:96
+msgid "Pro Settings"
+msgstr ""
+
+#: includes/class-settings.php:131
+#: templates/account-membership.php:62
+#: templates/account-membership.php:63
+msgid "Membership Levels"
+msgstr ""
+
+#: includes/class-settings.php:137
+msgid "Level definitions"
+msgstr ""
+
+#: includes/class-settings.php:145
+msgid "Offline Payment"
+msgstr ""
+
+#: includes/class-settings.php:151
+msgid "Bank transfer"
+msgstr ""
+
+#: includes/class-settings.php:159
+msgid "Online Payment (PayPal / Stripe)"
+msgstr ""
+
+#: includes/class-settings.php:165
+msgid "Gateway credentials"
+msgstr ""
+
+#: includes/class-settings.php:173
+msgid "Orders"
+msgstr ""
+
+#: includes/class-settings.php:179
+msgid "Auto-close timeout"
+msgstr ""
+
+#: includes/class-settings.php:187
+msgid "Social Login"
+msgstr ""
+
+#: includes/class-settings.php:193
+msgid "OAuth credentials"
+msgstr ""
+
+#: includes/class-settings.php:201
+msgid "License Server (optional)"
+msgstr ""
+
+#: includes/class-settings.php:207
+msgid "Remote validation"
+msgstr ""
+
+#: includes/class-settings.php:241
+msgid "The membership module is not loaded."
+msgstr ""
+
+#: includes/class-settings.php:259
+msgid "Enable the free base level"
+msgstr ""
+
+#: includes/class-settings.php:263
+msgid "When off, only paid levels remain: visitors without a membership hold no level at all. Content marked \"free\" stays visible to everyone either way."
+msgstr ""
+
+#: includes/class-settings.php:266
+msgid "Add, edit or remove levels here. Deleting a level downgrades everyone who held it; deleting the free level is the same as switching the base level off above. Price and validity drive the purchase flow."
+msgstr ""
+
+#: includes/class-settings.php:271
+msgid "Key"
+msgstr ""
+
+#: includes/class-settings.php:272
+#: includes/class-settings.php:326
+msgid "Label"
+msgstr ""
+
+#: includes/class-settings.php:273
+msgid "Price"
+msgstr ""
+
+#: includes/class-settings.php:274
+msgid "Validity (days)"
+msgstr ""
+
+#: includes/class-settings.php:275
+msgid "Colour"
+msgstr ""
+
+#: includes/class-settings.php:276
+msgid "Sort"
+msgstr ""
+
+#: includes/class-settings.php:277
+msgid "Action"
+msgstr ""
+
+#: includes/class-settings.php:294
+msgid "base"
+msgstr ""
+
+#: includes/class-settings.php:306
+msgid "forever"
+msgstr ""
+
+#: includes/class-settings.php:314
+#: includes/class-settings.php:331
+msgid "Delete"
+msgstr ""
+
+#: includes/class-settings.php:315
+msgid "deleting the base level disables it"
+msgstr ""
+
+#: includes/class-settings.php:321
+msgid "+ Add level"
+msgstr ""
+
+#: includes/class-settings.php:350
+msgid "Enable bank transfer (the admin confirms payment manually)"
+msgstr ""
+
+#: includes/class-settings.php:354
+msgid "Currency symbol"
+msgstr ""
+
+#: includes/class-settings.php:358
+msgid "Transfer instructions"
+msgstr ""
+
+#: includes/class-settings.php:360
+msgid "Shown to the buyer after an offline order is created. Leave empty for the built-in default."
+msgstr ""
+
+#: includes/class-settings.php:383
+msgid "Currency code (ISO 4217, shared by both gateways)"
+msgstr ""
+
+#: includes/class-settings.php:385
+msgid "For example USD / HKD / EUR / JPY. Must match the currency of the level prices."
+msgstr ""
+
+#: includes/class-settings.php:391
+msgid "Enable PayPal (Smart Buttons, server-side capture)"
+msgstr ""
+
+#: includes/class-settings.php:397
+msgid "Sandbox"
+msgstr ""
+
+#: includes/class-settings.php:398
+msgid "Live"
+msgstr ""
+
+#: includes/class-settings.php:402
+msgid "Client ID"
+msgstr ""
+
+#: includes/class-settings.php:406
+msgid "Secret"
+msgstr ""
+
+#: includes/class-settings.php:413
+msgid "Enable Stripe (hosted Checkout, cards / Apple Pay / Google Pay)"
+msgstr ""
+
+#: includes/class-settings.php:417
+msgid "Publishable Key"
+msgstr ""
+
+#: includes/class-settings.php:421
+msgid "Secret Key"
+msgstr ""
+
+#: includes/class-settings.php:425
+msgid "Webhook signing secret (optional, fallback fulfilment)"
+msgstr ""
+
+#. translators: %s: webhook endpoint URL
+#: includes/class-settings.php:432
+#, php-format
+msgid "For webhook fallback, add the endpoint %s in the Stripe dashboard, subscribe to checkout.session.completed and paste the signing secret above."
+msgstr ""
+
+#: includes/class-settings.php:449
+msgid "Close pending orders older than (hours)"
+msgstr ""
+
+#: includes/class-settings.php:451
+msgid "0 disables auto-closing. Never set this below 24 hours: an in-flight Stripe Checkout session can last that long."
+msgstr ""
+
+#: includes/class-settings.php:463
+msgid "The social login module is not loaded."
+msgstr ""
+
+#. translators: %s: example callback URL
+#: includes/class-settings.php:475
+#, php-format
+msgid "Register the callback URL (example: %s) on the provider platform. Only providers with both a client ID and a secret appear as front-end login buttons."
+msgstr ""
+
+#: includes/class-settings.php:483
+msgid "Provider"
+msgstr ""
+
+#: includes/class-settings.php:484
+msgid "Client ID / App ID"
+msgstr ""
+
+#: includes/class-settings.php:485
+msgid "Client Secret"
+msgstr ""
+
+#: includes/class-settings.php:515
+msgid "License server URL"
+msgstr ""
+
+#: includes/class-settings.php:519
+msgid "Leave empty for offline mode: signed keys are validated locally and no request leaves this site. When set, activation, heartbeat and updates go to that server; an unreachable server grants a 14-day grace period instead of disabling Pro."
+msgstr ""
+
+#: includes/class-settings.php:537
+msgid "Pro features are inactive because no valid license is active."
+msgstr ""
+
+#: includes/class-settings.php:539
+msgid "Manage license"
+msgstr ""
+
+#: includes/class-stripe.php:98
+msgid "Stripe 会话创建失败，请检查 Secret Key。"
+msgstr ""
+
+#: includes/class-stripe.php:113
+msgid "無效的结账会话。"
+msgstr ""
+
+#: includes/class-stripe.php:124
+msgid "无法获取 Stripe 会话信息。"
+msgstr ""
+
+#: includes/class-stripe.php:285
+msgid "Stripe 支付未启用。"
+msgstr ""
+
+#: includes/class-stripe.php:291
+msgid "訂單無效或狀態已變更。"
+msgstr ""
+
+#: includes/class-stripe.php:298
+msgid "正在跳轉到 Stripe…"
+msgstr ""
+
+#: includes/class-video.php:107
+msgid "權限不足，無法觀看此影片。"
+msgstr ""
+
+#: includes/class-video.php:115
+#: includes/class-video.php:116
+msgid "示範影片"
+msgstr ""
+
+#: includes/class-video.php:117
+msgid "新建影片"
+msgstr ""
+
+#: includes/class-video.php:118
+msgid "新增示範影片"
+msgstr ""
+
+#: includes/class-video.php:119
+msgid "編輯示範影片"
+msgstr ""
+
+#: includes/class-video.php:144
+msgid "影片設定"
+msgstr ""
+
+#: includes/class-video.php:178
+msgid "嵌入 URL（YouTube / Vimeo / 直接 mp4）"
+msgstr ""
+
+#: includes/class-video.php:182
+msgid "自訂縮圖網址（選填）"
+msgstr ""
+
+#: includes/class-video.php:318
+msgid "暫無可觀看的示範影片。"
+msgstr ""
+
+#. translators: %s: 等级名
+#: includes/class-video.php:358
+#, php-format
+msgid "此影片需要 %s 會員等級，請升級以觀看。"
+msgstr ""
+
+#: includes/functions.php:124
+msgid "That username does not exist."
+msgstr ""
+
+#: includes/functions.php:125
+msgid "Incorrect username or password."
+msgstr ""
+
+#: includes/functions.php:126
+msgid "Please enter a username."
+msgstr ""
+
+#: includes/functions.php:127
+msgid "Please enter a password."
+msgstr ""
+
+#: includes/functions.php:128
+msgid "That username is already taken."
+msgstr ""
+
+#: includes/functions.php:129
+msgid "That email address is already registered."
+msgstr ""
+
+#: includes/functions.php:130
+msgid "That email address is not valid."
+msgstr ""
+
+#: templates/account-membership.php:19
+#: templates/account-membership.php:20
+msgid "Current Membership"
+msgstr ""
+
+#: templates/account-membership.php:26
+msgid "Non-member"
+msgstr ""
+
+#: templates/account-membership.php:33
+msgid "You are currently a Free member. Upgrade to Monthly or Premium to unlock more materials and demo videos."
+msgstr ""
+
+#: templates/account-membership.php:35
+msgid "You do not have a membership yet. Upgrade to unlock more materials and demo videos."
+msgstr ""
+
+#: templates/account-membership.php:42
+msgid "Your membership has expired. Please renew to continue."
+msgstr ""
+
+#. translators: %s: membership expiry date, localized.
+#: templates/account-membership.php:49
+#, php-format
+msgid "Expires: %s"
+msgstr ""
+
+#: templates/account-membership.php:56
+msgid "Lifetime member"
+msgstr ""
+
+#: templates/account-membership.php:65
+msgid "Compare the benefits and your current status of each level."
+msgstr ""
+
+#: templates/account-membership.php:71
+#: templates/membership-purchase.php:86
+msgid "Level"
+msgstr ""
+
+#: templates/account-membership.php:72
+msgid "Description"
+msgstr ""
+
+#: templates/account-membership.php:80
+msgid "Browse basic content and purchase paid materials."
+msgstr ""
+
+#: templates/account-membership.php:91
+msgid "Current"
+msgstr ""
+
+#: templates/account-membership.php:93
+msgid "Included"
+msgstr ""
+
+#: templates/account-membership.php:95
+msgid "Locked"
+msgstr ""
+
+#: templates/membership-purchase.php:25
+msgid "Payment successful. Your membership has been activated."
+msgstr ""
+
+#: templates/membership-purchase.php:27
+msgid "Payment was not completed or verification failed. Please try again or contact the administrator."
+msgstr ""
+
+#: templates/membership-purchase.php:29
+msgid "Payment cancelled. The order remains pending."
+msgstr ""
+
+#. translators: %d: number of days the membership level stays valid.
+#: templates/membership-purchase.php:47
+#, php-format
+msgid "Valid for %d days"
+msgstr ""
+
+#: templates/membership-purchase.php:48
+msgid "Permanent"
+msgstr ""
+
+#: templates/membership-purchase.php:61
+msgid "No payment method is available. Please contact the administrator."
+msgstr ""
+
+#: templates/membership-purchase.php:64
+msgid "Buy"
+msgstr ""
+
+#: templates/membership-purchase.php:74
+msgid "Payment Instructions"
+msgstr ""
+
+#: templates/membership-purchase.php:81
+msgid "My Purchase History"
+msgstr ""
+
+#: templates/membership-purchase.php:85
+msgid "Order"
+msgstr ""
+
+#: templates/membership-purchase.php:138
+msgid "Failed to load PayPal. Please refresh the page and try again."
+msgstr ""
+
+#: templates/membership-purchase.php:153
+msgid "Confirming payment..."
+msgstr ""
+
+#: templates/membership-purchase.php:160
+msgid "PayPal payment error. Please try again or contact the administrator."
+msgstr ""
+
+#: templates/membership-purchase.php:179
+msgid "Please complete the PayPal payment below."
+msgstr ""
+
+#: templates/membership-purchase.php:188
+msgid "Network error. Please try again later."
+msgstr ""
