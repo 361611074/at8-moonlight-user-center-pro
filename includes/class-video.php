@@ -46,11 +46,11 @@ class AT8_MLUCP_Video
     public static function accessible_levels()
     {
         $levels = array('free');
-        if (is_user_logged_in() && class_exists('AT8_MLUCP_Membership')) {
-            $user_level = AT8_MLUCP_Membership::get_user_level();
-            $all        = AT8_MLUCP_Membership::get_levels();
+        if (is_user_logged_in() && class_exists('AT8_MLUC_Membership')) {
+            $user_level = AT8_MLUC_Membership::get_user_level();
+            $all        = AT8_MLUC_Membership::get_levels();
             foreach ($all as $key => $lv) {
-                if (AT8_MLUCP_Membership::get_level_sort_order($key) <= AT8_MLUCP_Membership::get_level_sort_order($user_level)) {
+                if (AT8_MLUC_Membership::get_level_sort_order($key) <= AT8_MLUC_Membership::get_level_sort_order($user_level)) {
                     $levels[] = $key;
                 }
             }
@@ -99,7 +99,7 @@ class AT8_MLUCP_Video
         if ('' === (string) $min_lv) {
             $min_lv = 'free';
         }
-        if (class_exists('AT8_MLUCP_Membership') && !AT8_MLUCP_Membership::user_can_access($min_lv)) {
+        if (class_exists('AT8_MLUC_Membership') && !AT8_MLUC_Membership::user_can_access($min_lv)) {
             if (!is_user_logged_in()) {
                 auth_redirect();
                 exit;
@@ -158,7 +158,7 @@ class AT8_MLUCP_Video
         }
         $embed = get_post_meta($post->ID, self::META_EMBED, true);
         $thumb = get_post_meta($post->ID, self::META_THUMB, true);
-        $levels = class_exists('AT8_MLUCP_Membership') ? AT8_MLUCP_Membership::get_levels() : array();
+        $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
         // 普通会员关闭时 free 不在等级表中，但作为「公开内容」标记仍需出现在下拉里
         if (!isset($levels['free'])) {
             $levels = array('free' => array('label' => __('公開（免費）', 'at8-moonlight-user-center-pro'))) + $levels;
@@ -293,7 +293,7 @@ class AT8_MLUCP_Video
                 $embed   = get_post_meta($post_id, self::META_EMBED, true);
                 $thumb   = get_post_meta($post_id, self::META_THUMB, true);
                 $min_lv  = get_post_meta($post_id, self::META_LEVEL, true) ?: 'free';
-                $level_label = class_exists('AT8_MLUCP_Membership') ? AT8_MLUCP_Membership::get_level_label($min_lv) : $min_lv;
+                $level_label = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_level_label($min_lv) : $min_lv;
                 if (!$thumb && has_post_thumbnail()) {
                     $thumb = get_the_post_thumbnail_url($post_id, 'medium');
                 }
@@ -335,7 +335,7 @@ class AT8_MLUCP_Video
             return '';
         }
         $min_level = get_post_meta($post_id, self::META_LEVEL, true) ?: 'free';
-        $can_access = !class_exists('AT8_MLUCP_Membership') || AT8_MLUCP_Membership::user_can_access($min_level);
+        $can_access = !class_exists('AT8_MLUC_Membership') || AT8_MLUC_Membership::user_can_access($min_level);
         $embed = self::normalize_embed_url(get_post_meta($post_id, self::META_EMBED, true));
 
         ob_start();
@@ -356,7 +356,7 @@ class AT8_MLUCP_Video
                         sprintf(
                             /* translators: %s: 等级名 */
                             __('此影片需要 %s 會員等級，請升級以觀看。', 'at8-moonlight-user-center-pro'),
-                            AT8_MLUCP_Membership::get_level_label($min_level)
+                            AT8_MLUC_Membership::get_level_label($min_level)
                         )
                     );
                     ?>

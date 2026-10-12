@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AT8 Moonlight User Center Pro 1.2.0\n"
+"Project-Id-Version: AT8 Moonlight User Center Pro 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/at8-moonlight-user-center-pro\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-12T12:31:57+00:00\n"
+"POT-Creation-Date: 2026-10-12T14:19:03+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: at8-moonlight-user-center-pro\n"
@@ -27,7 +27,7 @@ msgstr ""
 
 #. Description of the plugin
 #: at8-moonlight-user-center-pro.php
-msgid "Commercial add-on for AT8 Moonlight User Center: membership levels, paywall, membership payments (bank transfer, PayPal, Stripe), demo videos, downloadable materials and purchases. Social login, hidden content basics and Elementor widgets live in the free plugin. Requires the free plugin to be active."
+msgid "Commercial add-on for AT8 Moonlight User Center: online payments (PayPal, Stripe), paywall, demo videos, downloadable materials, purchases and a raised membership level cap. The user center core, social login, hidden content basics, offline payments and Elementor widgets live in the free plugin. Requires the free plugin to be active."
 msgstr ""
 
 #. Author of the plugin
@@ -35,7 +35,7 @@ msgstr ""
 msgid "漫步白月光"
 msgstr ""
 
-#: at8-moonlight-user-center-pro.php:95
+#: at8-moonlight-user-center-pro.php:96
 msgid "AT8 Moonlight User Center Pro requires the free plugin AT8 Moonlight User Center to be installed and active."
 msgstr ""
 
@@ -53,6 +53,98 @@ msgstr ""
 
 #: includes/class-assets.php:204
 msgid "Choose a visibility rule…"
+msgstr ""
+
+#: includes/class-gateways.php:76
+msgid "PayPal (Online Payment)"
+msgstr ""
+
+#: includes/class-gateways.php:80
+msgid "Stripe (Credit Card)"
+msgstr ""
+
+#: includes/class-gateways.php:122
+msgid "Order created. Redirecting to Stripe…"
+msgstr ""
+
+#: includes/class-gateways.php:149
+msgid "Online Payment (PayPal / Stripe)"
+msgstr ""
+
+#: includes/class-gateways.php:156
+msgid "Gateway credentials"
+msgstr ""
+
+#: includes/class-gateways.php:164
+msgid "Orders"
+msgstr ""
+
+#: includes/class-gateways.php:171
+msgid "Order management"
+msgstr ""
+
+#: includes/class-gateways.php:187
+msgid "These gateways stay dormant until a valid Pro license is active. The bank-transfer gateway of the free plugin keeps working regardless."
+msgstr ""
+
+#: includes/class-gateways.php:193
+msgid "Configured gateways appear next to bank transfer in the purchase flow. The currency code is shared and lives in Offline Payments."
+msgstr ""
+
+#: includes/class-gateways.php:216
+msgid "Enable PayPal (Smart Buttons, server-side capture)"
+msgstr ""
+
+#: includes/class-gateways.php:220
+msgid "Mode"
+msgstr ""
+
+#: includes/class-gateways.php:222
+msgid "Sandbox"
+msgstr ""
+
+#: includes/class-gateways.php:223
+msgid "Live"
+msgstr ""
+
+#: includes/class-gateways.php:227
+msgid "Client ID"
+msgstr ""
+
+#: includes/class-gateways.php:231
+msgid "Secret"
+msgstr ""
+
+#: includes/class-gateways.php:238
+msgid "Enable Stripe (hosted Checkout, cards / Apple Pay / Google Pay)"
+msgstr ""
+
+#: includes/class-gateways.php:242
+msgid "Publishable Key"
+msgstr ""
+
+#: includes/class-gateways.php:246
+msgid "Secret Key"
+msgstr ""
+
+#: includes/class-gateways.php:250
+msgid "Webhook signing secret (optional, fallback fulfilment)"
+msgstr ""
+
+#. translators: %s: webhook endpoint URL
+#: includes/class-gateways.php:257
+#, php-format
+msgid "For webhook fallback, add the endpoint %s in the Stripe dashboard, subscribe to checkout.session.completed and paste the signing secret above."
+msgstr ""
+
+#: includes/class-gateways.php:275
+msgid "Open the order list →"
+msgstr ""
+
+#. translators: %d: number of hours after which unpaid orders are cancelled.
+#: includes/class-gateways.php:281
+#, php-format
+msgid "Confirming payment on an order grants the membership level (or unlocks the paid content) automatically. Unpaid orders are cancelled after %d hours; the timeout lives in Offline Payments."
 msgstr ""
 
 #: includes/class-hidecontent.php:96
@@ -84,7 +176,6 @@ msgid "Keys issued before this version are no longer valid. Please get a new lic
 msgstr ""
 
 #: includes/class-license.php:97
-#: includes/class-settings.php:435
 msgid "Manage license"
 msgstr ""
 
@@ -197,179 +288,6 @@ msgstr ""
 msgid "文件未配置。"
 msgstr ""
 
-#: includes/class-membership-tab.php:58
-msgid "Membership"
-msgstr ""
-
-#: includes/class-membership-tab.php:85
-#: includes/class-membership-tab.php:86
-msgid "Buy / Upgrade Membership"
-msgstr ""
-
-#: includes/class-membership.php:356
-msgid "会员等级"
-msgstr ""
-
-#: includes/class-membership.php:359
-msgid "等级"
-msgstr ""
-
-#: includes/class-membership.php:363
-msgid "（無會員等級）"
-msgstr ""
-
-#: includes/class-membership.php:371
-msgid "可选等级由后台「会员等级定义」配置。"
-msgstr ""
-
-#: includes/class-membership.php:375
-msgid "到期日"
-msgstr ""
-
-#: includes/class-membership.php:380
-msgid "永不过期"
-msgstr ""
-
-#: includes/class-membership.php:382
-msgid "勾选「永不过期」时忽略日期；不勾选则到期时间为该日 23:59（站点时区）。"
-msgstr ""
-
-#: includes/class-payments.php:105
-#: includes/class-paypal.php:252
-msgid "訂單不存在。"
-msgstr ""
-
-#: includes/class-payments.php:108
-#: includes/class-payments.php:126
-#: includes/class-payments.php:154
-msgid "訂單已完成或已取消。"
-msgstr ""
-
-#: includes/class-payments.php:118
-msgid "付費內容訂單無效。"
-msgstr ""
-
-#: includes/class-payments.php:131
-msgid "解鎖失敗：付費內容不存在或用戶無效。"
-msgstr ""
-
-#: includes/class-payments.php:145
-msgid "會員等級不存在或用戶無效。"
-msgstr ""
-
-#: includes/class-payments.php:160
-msgid "開通失敗：用戶等級不低於目標等級。"
-msgstr ""
-
-#: includes/class-payments.php:180
-#: includes/class-payments.php:181
-#: includes/class-payments.php:182
-#: includes/class-payments.php:183
-msgid "会员订单"
-msgstr ""
-
-#: includes/class-payments.php:184
-msgid "新建订单"
-msgstr ""
-
-#: includes/class-payments.php:185
-msgid "新建会员订单"
-msgstr ""
-
-#: includes/class-payments.php:186
-msgid "新会员订单"
-msgstr ""
-
-#: includes/class-payments.php:187
-msgid "编辑会员订单"
-msgstr ""
-
-#: includes/class-payments.php:188
-#: includes/class-payments.php:189
-msgid "查看会员订单"
-msgstr ""
-
-#: includes/class-payments.php:190
-msgid "搜索会员订单"
-msgstr ""
-
-#: includes/class-payments.php:191
-msgid "暂无订单"
-msgstr ""
-
-#: includes/class-payments.php:192
-msgid "回收站中暂无订单"
-msgstr ""
-
-#: includes/class-payments.php:442
-msgid "收款資訊"
-msgstr ""
-
-#: includes/class-payments.php:461
-msgid "待確認"
-msgstr ""
-
-#: includes/class-payments.php:462
-msgid "已收款"
-msgstr ""
-
-#: includes/class-payments.php:463
-msgid "已取消"
-msgstr ""
-
-#: includes/class-payments.php:467
-msgid "用戶"
-msgstr ""
-
-#: includes/class-payments.php:469
-msgid "會員等級"
-msgstr ""
-
-#: includes/class-payments.php:474
-msgid "付費內容解鎖"
-msgstr ""
-
-#: includes/class-payments.php:480
-msgid "金額"
-msgstr ""
-
-#: includes/class-payments.php:482
-msgid "支付方式"
-msgstr ""
-
-#: includes/class-payments.php:484
-msgid "狀態"
-msgstr ""
-
-#: includes/class-payments.php:486
-msgid "已開通於"
-msgstr ""
-
-#: includes/class-payments.php:494
-msgid "確認收款並解鎖內容"
-msgstr ""
-
-#: includes/class-payments.php:494
-msgid "確認收款並開通會員"
-msgstr ""
-
-#: includes/class-payments.php:500
-msgid "取消訂單"
-msgstr ""
-
-#: includes/class-payments.php:512
-#: includes/class-payments.php:537
-msgid "權限不足或校驗失敗。"
-msgstr ""
-
-#: includes/class-payments.php:523
-msgid "已確認收款，內容已解鎖。"
-msgstr ""
-
-#: includes/class-payments.php:523
-msgid "已確認收款，會員等級開通成功。"
-msgstr ""
-
 #: includes/class-paypal.php:77
 msgid "PayPal 凭据校验失败，请检查 Client ID / Secret 与模式。"
 msgstr ""
@@ -412,6 +330,10 @@ msgstr ""
 msgid "付款成功，會員等級已開通。"
 msgstr ""
 
+#: includes/class-paypal.php:252
+msgid "訂單不存在。"
+msgstr ""
+
 #: includes/class-paypal.php:255
 msgid "無權操作該訂單。"
 msgstr ""
@@ -437,33 +359,26 @@ msgid "Item"
 msgstr ""
 
 #: includes/class-purchases.php:100
-#: templates/membership-purchase.php:87
 msgid "Amount"
 msgstr ""
 
 #: includes/class-purchases.php:101
-#: templates/account-membership.php:73
-#: templates/membership-purchase.php:88
 msgid "Status"
 msgstr ""
 
 #: includes/class-purchases.php:102
-#: templates/membership-purchase.php:89
 msgid "Date"
 msgstr ""
 
 #: includes/class-purchases.php:106
-#: templates/membership-purchase.php:95
 msgid "Pending"
 msgstr ""
 
 #: includes/class-purchases.php:107
-#: templates/membership-purchase.php:96
 msgid "Paid"
 msgstr ""
 
 #: includes/class-purchases.php:108
-#: templates/membership-purchase.php:97
 msgid "Cancelled"
 msgstr ""
 
@@ -471,196 +386,8 @@ msgstr ""
 msgid "You have no purchases yet."
 msgstr ""
 
-#: includes/class-settings.php:73
-#: includes/class-settings.php:440
-msgid "User Center Pro Settings"
-msgstr ""
-
-#: includes/class-settings.php:74
-#: includes/class-settings.php:96
-msgid "Pro Settings"
-msgstr ""
-
-#: includes/class-settings.php:123
-#: templates/account-membership.php:62
-#: templates/account-membership.php:63
-msgid "Membership Levels"
-msgstr ""
-
-#: includes/class-settings.php:129
-msgid "Level definitions"
-msgstr ""
-
-#: includes/class-settings.php:137
-msgid "Offline Payment"
-msgstr ""
-
-#: includes/class-settings.php:143
-msgid "Bank transfer"
-msgstr ""
-
-#: includes/class-settings.php:151
-msgid "Online Payment (PayPal / Stripe)"
-msgstr ""
-
-#: includes/class-settings.php:157
-msgid "Gateway credentials"
-msgstr ""
-
-#: includes/class-settings.php:165
-msgid "Orders"
-msgstr ""
-
-#: includes/class-settings.php:171
-msgid "Auto-close timeout"
-msgstr ""
-
-#: includes/class-settings.php:205
-msgid "The membership module is not loaded."
-msgstr ""
-
-#: includes/class-settings.php:223
-msgid "Enable the free base level"
-msgstr ""
-
-#: includes/class-settings.php:227
-msgid "When off, only paid levels remain: visitors without a membership hold no level at all. Content marked \"free\" stays visible to everyone either way."
-msgstr ""
-
-#: includes/class-settings.php:230
-msgid "Add, edit or remove levels here. Deleting a level downgrades everyone who held it; deleting the free level is the same as switching the base level off above. Price and validity drive the purchase flow."
-msgstr ""
-
-#: includes/class-settings.php:235
-msgid "Key"
-msgstr ""
-
-#: includes/class-settings.php:236
-#: includes/class-settings.php:290
-msgid "Label"
-msgstr ""
-
-#: includes/class-settings.php:237
-msgid "Price"
-msgstr ""
-
-#: includes/class-settings.php:238
-msgid "Validity (days)"
-msgstr ""
-
-#: includes/class-settings.php:239
-msgid "Colour"
-msgstr ""
-
-#: includes/class-settings.php:240
-msgid "Sort"
-msgstr ""
-
-#: includes/class-settings.php:241
-msgid "Action"
-msgstr ""
-
-#: includes/class-settings.php:258
-msgid "base"
-msgstr ""
-
-#: includes/class-settings.php:270
-msgid "forever"
-msgstr ""
-
-#: includes/class-settings.php:278
-#: includes/class-settings.php:295
-msgid "Delete"
-msgstr ""
-
-#: includes/class-settings.php:279
-msgid "deleting the base level disables it"
-msgstr ""
-
-#: includes/class-settings.php:285
-msgid "+ Add level"
-msgstr ""
-
-#: includes/class-settings.php:314
-msgid "Enable bank transfer (the admin confirms payment manually)"
-msgstr ""
-
-#: includes/class-settings.php:318
-msgid "Currency symbol"
-msgstr ""
-
-#: includes/class-settings.php:322
-msgid "Transfer instructions"
-msgstr ""
-
-#: includes/class-settings.php:324
-msgid "Shown to the buyer after an offline order is created. Leave empty for the built-in default."
-msgstr ""
-
-#: includes/class-settings.php:347
-msgid "Currency code (ISO 4217, shared by both gateways)"
-msgstr ""
-
-#: includes/class-settings.php:349
-msgid "For example USD / HKD / EUR / JPY. Must match the currency of the level prices."
-msgstr ""
-
-#: includes/class-settings.php:355
-msgid "Enable PayPal (Smart Buttons, server-side capture)"
-msgstr ""
-
-#: includes/class-settings.php:359
-msgid "Mode"
-msgstr ""
-
-#: includes/class-settings.php:361
-msgid "Sandbox"
-msgstr ""
-
-#: includes/class-settings.php:362
-msgid "Live"
-msgstr ""
-
-#: includes/class-settings.php:366
-msgid "Client ID"
-msgstr ""
-
-#: includes/class-settings.php:370
-msgid "Secret"
-msgstr ""
-
-#: includes/class-settings.php:377
-msgid "Enable Stripe (hosted Checkout, cards / Apple Pay / Google Pay)"
-msgstr ""
-
-#: includes/class-settings.php:381
-msgid "Publishable Key"
-msgstr ""
-
-#: includes/class-settings.php:385
-msgid "Secret Key"
-msgstr ""
-
-#: includes/class-settings.php:389
-msgid "Webhook signing secret (optional, fallback fulfilment)"
-msgstr ""
-
-#. translators: %s: webhook endpoint URL
-#: includes/class-settings.php:396
-#, php-format
-msgid "For webhook fallback, add the endpoint %s in the Stripe dashboard, subscribe to checkout.session.completed and paste the signing secret above."
-msgstr ""
-
-#: includes/class-settings.php:413
-msgid "Close pending orders older than (hours)"
-msgstr ""
-
-#: includes/class-settings.php:415
-msgid "0 disables auto-closing. Never set this below 24 hours: an in-flight Stripe Checkout session can last that long."
-msgstr ""
-
-#: includes/class-settings.php:433
-msgid "Pro features are inactive because no valid license is active."
+#: includes/class-settings.php:71
+msgid "Settings"
 msgstr ""
 
 #: includes/class-stripe.php:98
@@ -756,126 +483,4 @@ msgstr ""
 
 #: includes/functions.php:130
 msgid "That email address is not valid."
-msgstr ""
-
-#: templates/account-membership.php:19
-#: templates/account-membership.php:20
-msgid "Current Membership"
-msgstr ""
-
-#: templates/account-membership.php:26
-msgid "Non-member"
-msgstr ""
-
-#: templates/account-membership.php:33
-msgid "You are currently a Free member. Upgrade to Monthly or Premium to unlock more materials and demo videos."
-msgstr ""
-
-#: templates/account-membership.php:35
-msgid "You do not have a membership yet. Upgrade to unlock more materials and demo videos."
-msgstr ""
-
-#: templates/account-membership.php:42
-msgid "Your membership has expired. Please renew to continue."
-msgstr ""
-
-#. translators: %s: membership expiry date, localized.
-#: templates/account-membership.php:49
-#, php-format
-msgid "Expires: %s"
-msgstr ""
-
-#: templates/account-membership.php:56
-msgid "Lifetime member"
-msgstr ""
-
-#: templates/account-membership.php:65
-msgid "Compare the benefits and your current status of each level."
-msgstr ""
-
-#: templates/account-membership.php:71
-#: templates/membership-purchase.php:86
-msgid "Level"
-msgstr ""
-
-#: templates/account-membership.php:72
-msgid "Description"
-msgstr ""
-
-#: templates/account-membership.php:80
-msgid "Browse basic content and purchase paid materials."
-msgstr ""
-
-#: templates/account-membership.php:91
-msgid "Current"
-msgstr ""
-
-#: templates/account-membership.php:93
-msgid "Included"
-msgstr ""
-
-#: templates/account-membership.php:95
-msgid "Locked"
-msgstr ""
-
-#: templates/membership-purchase.php:25
-msgid "Payment successful. Your membership has been activated."
-msgstr ""
-
-#: templates/membership-purchase.php:27
-msgid "Payment was not completed or verification failed. Please try again or contact the administrator."
-msgstr ""
-
-#: templates/membership-purchase.php:29
-msgid "Payment cancelled. The order remains pending."
-msgstr ""
-
-#. translators: %d: number of days the membership level stays valid.
-#: templates/membership-purchase.php:47
-#, php-format
-msgid "Valid for %d days"
-msgstr ""
-
-#: templates/membership-purchase.php:48
-msgid "Permanent"
-msgstr ""
-
-#: templates/membership-purchase.php:61
-msgid "No payment method is available. Please contact the administrator."
-msgstr ""
-
-#: templates/membership-purchase.php:64
-msgid "Buy"
-msgstr ""
-
-#: templates/membership-purchase.php:74
-msgid "Payment Instructions"
-msgstr ""
-
-#: templates/membership-purchase.php:81
-msgid "My Purchase History"
-msgstr ""
-
-#: templates/membership-purchase.php:85
-msgid "Order"
-msgstr ""
-
-#: templates/membership-purchase.php:138
-msgid "Failed to load PayPal. Please refresh the page and try again."
-msgstr ""
-
-#: templates/membership-purchase.php:153
-msgid "Confirming payment..."
-msgstr ""
-
-#: templates/membership-purchase.php:160
-msgid "PayPal payment error. Please try again or contact the administrator."
-msgstr ""
-
-#: templates/membership-purchase.php:179
-msgid "Please complete the PayPal payment below."
-msgstr ""
-
-#: templates/membership-purchase.php:188
-msgid "Network error. Please try again later."
 msgstr ""

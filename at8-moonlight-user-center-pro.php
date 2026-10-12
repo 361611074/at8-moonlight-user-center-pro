@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       AT8 Moonlight User Center Pro
  * Plugin URI:        https://www.at8.fun/
- * Description:       Commercial add-on for AT8 Moonlight User Center: membership levels, paywall, membership payments (bank transfer, PayPal, Stripe), demo videos, downloadable materials and purchases. Social login, hidden content basics and Elementor widgets live in the free plugin. Requires the free plugin to be active.
- * Version:          1.2.0
+ * Description:       Commercial add-on for AT8 Moonlight User Center: online payments (PayPal, Stripe), paywall, demo videos, downloadable materials, purchases and a raised membership level cap. The user center core, social login, hidden content basics, offline payments and Elementor widgets live in the free plugin. Requires the free plugin to be active.
+ * Version:          1.3.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            漫步白月光
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * __DIR__ (never to a shared constant), so a constant defined elsewhere can
  * never redirect this plugin's class loading.
  */
-define( 'AT8_MLUCP_VERSION', '1.2.0' );
+define( 'AT8_MLUCP_VERSION', '1.3.0' );
 define( 'AT8_MLUCP_PLUGIN_FILE', __FILE__ );
 define( 'AT8_MLUCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AT8_MLUCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -76,7 +76,8 @@ spl_autoload_register( 'at8_mlucp_autoload' );
  * - Free missing: an admin notice explains the requirement; nothing else runs
  *   and no fatal error is possible.
  * - License invalid: only the license screen and the settings screen load.
- *   Membership, paywall, payments, … stay completely dormant.
+ *   Online gateways, paywall, videos, … stay completely dormant; the free
+ *   plugin's offline payment flow keeps working on its own.
  * - License valid: every commercial module boots and flips the free plugin's
  *   `at8_mluc_is_pro` bridge filter.
  *
@@ -143,15 +144,22 @@ function at8_mlucp_bootstrap() {
 
 	AT8_MLUCP_Settings::get_instance();
 	AT8_MLUCP_Assets::get_instance();
-	AT8_MLUCP_Membership::get_instance();
-	AT8_MLUCP_Membership_Tab::get_instance();
-	AT8_MLUCP_Payments::get_instance();
+	AT8_MLUCP_Gateways::get_instance();
 	AT8_MLUCP_Purchases::get_instance();
 	AT8_MLUCP_Paywall::get_instance();
 	AT8_MLUCP_Hidecontent::get_instance();
 	AT8_MLUCP_Video::get_instance();
 	AT8_MLUCP_Material::get_instance();
 	AT8_MLUCP_Editor_Button::get_instance();
+
+	// Pro lifts the free plugin's membership level cap (3 → 8) so the level
+	// editor in the shared settings screen accepts more tiers.
+	add_filter(
+		'at8_mluc_membership_level_limit',
+		function () {
+			return 8;
+		}
+	);
 
 	add_filter(
 		'at8_mluc_is_pro',

@@ -49,11 +49,11 @@ class AT8_MLUCP_Material
     public static function accessible_levels()
     {
         $levels = array('free');
-        if (is_user_logged_in() && class_exists('AT8_MLUCP_Membership')) {
-            $user_level = AT8_MLUCP_Membership::get_user_level();
-            $all        = AT8_MLUCP_Membership::get_levels();
+        if (is_user_logged_in() && class_exists('AT8_MLUC_Membership')) {
+            $user_level = AT8_MLUC_Membership::get_user_level();
+            $all        = AT8_MLUC_Membership::get_levels();
             foreach ($all as $key => $lv) {
-                if (AT8_MLUCP_Membership::get_level_sort_order($key) <= AT8_MLUCP_Membership::get_level_sort_order($user_level)) {
+                if (AT8_MLUC_Membership::get_level_sort_order($key) <= AT8_MLUC_Membership::get_level_sort_order($user_level)) {
                     $levels[] = $key;
                 }
             }
@@ -105,7 +105,7 @@ class AT8_MLUCP_Material
         if ('' === (string) $min_lv) {
             $min_lv = 'free';
         }
-        if (class_exists('AT8_MLUCP_Membership') && !AT8_MLUCP_Membership::user_can_access($min_lv)) {
+        if (class_exists('AT8_MLUC_Membership') && !AT8_MLUC_Membership::user_can_access($min_lv)) {
             if (!is_user_logged_in()) {
                 auth_redirect();
                 exit;
@@ -165,7 +165,7 @@ class AT8_MLUCP_Material
         $level  = get_post_meta($post->ID, self::META_LEVEL, true) ?: 'free';
         $file   = get_post_meta($post->ID, self::META_FILE, true);
         $limit  = (int) get_post_meta($post->ID, self::META_DOWNLOAD_LIMIT, true);
-        $levels = class_exists('AT8_MLUCP_Membership') ? AT8_MLUCP_Membership::get_levels() : array();
+        $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
         // 普通会员关闭时 free 不在等级表中，但作为「公开内容」标记仍需出现在下拉里
         if (!isset($levels['free'])) {
             $levels = array('free' => array('label' => __('公開（免費）', 'at8-moonlight-user-center-pro'))) + $levels;
@@ -261,7 +261,7 @@ class AT8_MLUCP_Material
                 $query->the_post();
                 $post_id = get_the_ID();
                 $min_lv = get_post_meta($post_id, self::META_LEVEL, true) ?: 'free';
-                $level_label = class_exists('AT8_MLUCP_Membership') ? AT8_MLUCP_Membership::get_level_label($min_lv) : $min_lv;
+                $level_label = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_level_label($min_lv) : $min_lv;
                 $download_url = is_user_logged_in()
                     ? wp_nonce_url(add_query_arg(array('action' => 'at8_mlucp_download', 'mid' => $post_id), admin_url('admin-post.php')), 'at8_mlucp_download_' . $post_id)
                     : '';
@@ -312,7 +312,7 @@ class AT8_MLUCP_Material
                 $query->the_post();
                 $post_id = get_the_ID();
                 $min_lv = get_post_meta($post_id, self::META_LEVEL, true) ?: 'free';
-                $level_label = class_exists('AT8_MLUCP_Membership') ? AT8_MLUCP_Membership::get_level_label($min_lv) : $min_lv;
+                $level_label = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_level_label($min_lv) : $min_lv;
                 $url = wp_nonce_url(add_query_arg(array('action' => 'at8_mlucp_download', 'mid' => $post_id), admin_url('admin-post.php')), 'at8_mlucp_download_' . $post_id);
                 $used = (int) get_user_meta(get_current_user_id(), 'at8_mlucp_material_dl_' . $post_id, true);
                 $limit = (int) get_post_meta($post_id, self::META_DOWNLOAD_LIMIT, true);
@@ -358,7 +358,7 @@ class AT8_MLUCP_Material
             wp_die(esc_html__('教材不存在。', 'at8-moonlight-user-center-pro'));
         }
         $min_lv = get_post_meta($post_id, self::META_LEVEL, true) ?: 'free';
-        if (class_exists('AT8_MLUCP_Membership') && !AT8_MLUCP_Membership::user_can_access($min_lv)) {
+        if (class_exists('AT8_MLUC_Membership') && !AT8_MLUC_Membership::user_can_access($min_lv)) {
             wp_die(esc_html__('權限不足，無法下載。', 'at8-moonlight-user-center-pro'));
         }
         $limit = (int) get_post_meta($post_id, self::META_DOWNLOAD_LIMIT, true);

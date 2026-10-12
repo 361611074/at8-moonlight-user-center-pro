@@ -44,9 +44,9 @@ function at8_mlucp_uninstall_site() {
 		)
 	);
 
-	// Membership level and expiry meta on user accounts.
-	delete_metadata( 'user', 0, 'at8_mlucp_membership_level', '', true );
-	delete_metadata( 'user', 0, 'at8_mlucp_membership_expires', '', true );
+	// Membership levels, orders and their meta belong to the free plugin and
+	// are cleaned by its own uninstall routine; only Pro-owned data is
+	// removed here.
 }
 
 if ( is_multisite() ) {

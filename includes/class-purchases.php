@@ -53,11 +53,11 @@ class AT8_MLUCP_Purchases
     public static function get_user_purchases($user_id = 0)
     {
         $user_id = $user_id ? (int) $user_id : get_current_user_id();
-        if (!$user_id || !post_type_exists('at8_mlucp_order')) {
+        if (!$user_id || !post_type_exists('at8_mluc_order')) {
             return array();
         }
         $orders = get_posts(array(
-            'post_type'      => 'at8_mlucp_order',
+            'post_type'      => 'at8_mluc_order',
             'post_status'    => 'publish',
             'author'         => $user_id,
             'posts_per_page' => 50,
@@ -71,11 +71,11 @@ class AT8_MLUCP_Purchases
             $out[] = array(
                 'id'     => (int) $oid,
                 'title'  => get_the_title($oid),
-                'level'  => (string) get_post_meta($oid, '_at8_mlucp_pay_level', true),
-                'post'   => (int) get_post_meta($oid, '_at8_mlucp_pay_post', true),
-                'type'   => (string) get_post_meta($oid, '_at8_mlucp_pay_type', true),
-                'price'  => (float) get_post_meta($oid, '_at8_mlucp_pay_price', true),
-                'status' => (string) get_post_meta($oid, '_at8_mlucp_pay_status', true),
+                'level'  => (string) get_post_meta($oid, '_at8_mluc_pay_level', true),
+                'post'   => (int) get_post_meta($oid, '_at8_mluc_pay_post', true),
+                'type'   => (string) get_post_meta($oid, '_at8_mluc_pay_type', true),
+                'price'  => (float) get_post_meta($oid, '_at8_mluc_pay_price', true),
+                'status' => (string) get_post_meta($oid, '_at8_mluc_pay_status', true),
                 'date'   => (int) get_post_time('U', true, $oid),
             );
         }
@@ -101,7 +101,7 @@ class AT8_MLUCP_Purchases
             echo '<th>' . esc_html(at8_mlucp_ui_label('pu_th_status', __('Status', 'at8-moonlight-user-center-pro'))) . '</th>';
             echo '<th>' . esc_html(at8_mlucp_ui_label('pu_th_date', __('Date', 'at8-moonlight-user-center-pro'))) . '</th>';
             echo '</tr></thead><tbody>';
-            $symbol = AT8_MLUCP_Payments::get_currency_symbol();
+            $symbol = AT8_MLUC_Payments::get_currency_symbol();
             $status_labels = array(
                 'pending'   => __('Pending', 'at8-moonlight-user-center-pro'),
                 'paid'      => __('Paid', 'at8-moonlight-user-center-pro'),

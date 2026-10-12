@@ -145,8 +145,8 @@ class AT8_MLUCP_Hidecontent
         if (!function_exists('at8_mlucp_user_level')) {
             return false;
         }
-        $levels = method_exists('AT8_MLUCP_Membership', 'get_levels')
-            ? AT8_MLUCP_Membership::get_levels()
+        $levels = method_exists('AT8_MLUC_Membership', 'get_levels')
+            ? AT8_MLUC_Membership::get_levels()
             : array();
         if (empty($levels)) {
             // 工厂默认：monthly sort_order=20

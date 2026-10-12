@@ -39,30 +39,30 @@ class AT8_MLUCP_Stripe
     public static function create_session($order_id)
     {
         $order_id = (int) $order_id;
-        $price    = (float) get_post_meta($order_id, '_at8_mlucp_pay_price', true);
-        $level    = (string) get_post_meta($order_id, '_at8_mlucp_pay_level', true);
-        $user_id  = (int) get_post_meta($order_id, '_at8_mlucp_pay_user', true);
+        $price    = (float) get_post_meta($order_id, '_at8_mluc_pay_price', true);
+        $level    = (string) get_post_meta($order_id, '_at8_mluc_pay_level', true);
+        $user_id  = (int) get_post_meta($order_id, '_at8_mluc_pay_user', true);
         $user     = $user_id ? get_user_by('id', $user_id) : false;
         if ($order_id <= 0 || $price <= 0) {
             return new WP_Error('at8_mlucp_st_order', __('本地订单无效。', 'at8-moonlight-user-center-pro'));
         }
 
         // 商品名：付费墙订单用文章标题，会员订单用等级名。
-        $item_label = (string) get_post_meta($order_id, '_at8_mlucp_pay_title', true);
-        if ('' === $item_label && class_exists('AT8_MLUCP_Membership')) {
-            $item_label = AT8_MLUCP_Membership::get_level_label($level);
+        $item_label = (string) get_post_meta($order_id, '_at8_mluc_pay_title', true);
+        if ('' === $item_label && class_exists('AT8_MLUC_Membership')) {
+            $item_label = AT8_MLUC_Membership::get_level_label($level);
         }
 
         // 回跳地址：付费墙订单回文章页，会员订单回账户中心。
-        if ('paywall' === (string) get_post_meta($order_id, '_at8_mlucp_pay_type', true)) {
-            $pw_post = (int) get_post_meta($order_id, '_at8_mlucp_pay_post', true);
+        if ('paywall' === (string) get_post_meta($order_id, '_at8_mluc_pay_type', true)) {
+            $pw_post = (int) get_post_meta($order_id, '_at8_mluc_pay_post', true);
             $base    = ($pw_post && get_permalink($pw_post)) ? get_permalink($pw_post) : home_url('/');
         } else {
             $base = at8_mlucp_get_account_url();
         }
         $success = add_query_arg(array(
             'at8_mlucp_stripe_return' => 1,
-            'at8_mlucp_order'         => $order_id,
+            'at8_mluc_order'         => $order_id,
             'session_id'         => '{CHECKOUT_SESSION_ID}',
         ), $base);
         $cancel = add_query_arg(array('at8_mlucp_stripe_cancel' => 1), $base);
@@ -73,8 +73,8 @@ class AT8_MLUCP_Stripe
             'cancel_url'              => $cancel,
             'client_reference_id'     => (string) $order_id,
             'line_items[0][quantity]' => 1,
-            'line_items[0][price_data][currency]'            => strtolower(AT8_MLUCP_Payments::currency_code()),
-            'line_items[0][price_data][unit_amount]'         => (string) AT8_MLUCP_Payments::api_amount_minor($price),
+            'line_items[0][price_data][currency]'            => strtolower(AT8_MLUC_Payments::currency_code()),
+            'line_items[0][price_data][unit_amount]'         => (string) AT8_MLUC_Payments::api_amount_minor($price),
             'line_items[0][price_data][product_data][name]'  => sprintf(
                 '%s - %s',
                 get_bloginfo('name'),
@@ -132,11 +132,11 @@ class AT8_MLUCP_Stripe
     private static function fulfill($session)
     {
         $order_id = isset($session['client_reference_id']) ? (int) $session['client_reference_id'] : 0;
-        if ($order_id <= 0 || get_post_type($order_id) !== AT8_MLUCP_Payments::CPT) {
+        if ($order_id <= 0 || get_post_type($order_id) !== AT8_MLUC_Payments::CPT) {
             return;
         }
         // 幂等：已支付直接返回。
-        if ('paid' === (string) get_post_meta($order_id, '_at8_mlucp_pay_status', true)) {
+        if ('paid' === (string) get_post_meta($order_id, '_at8_mluc_pay_status', true)) {
             return;
         }
         $payment_status = isset($session['payment_status']) ? (string) $session['payment_status'] : '';
@@ -144,14 +144,14 @@ class AT8_MLUCP_Stripe
             return;
         }
         // 金额校验（最小货币单位比对）。
-        $price   = (float) get_post_meta($order_id, '_at8_mlucp_pay_price', true);
+        $price   = (float) get_post_meta($order_id, '_at8_mluc_pay_price', true);
         $amount  = isset($session['amount_total']) ? (int) $session['amount_total'] : -1;
-        $expect  = AT8_MLUCP_Payments::api_amount_minor($price);
+        $expect  = AT8_MLUC_Payments::api_amount_minor($price);
         if ($amount < 0 || abs($amount - $expect) > 1) {
             return;
         }
         $txn = isset($session['payment_intent']) ? (string) $session['payment_intent'] : (string) $session['id'];
-        AT8_MLUCP_Payments::complete_order($order_id, $txn, 'stripe');
+        AT8_MLUC_Payments::complete_order($order_id, $txn, 'stripe');
     }
 
     /**
@@ -165,13 +165,13 @@ class AT8_MLUCP_Stripe
         if (empty($_GET['at8_mlucp_stripe_return']) && empty($_GET['at8_mlucp_stripe_cancel'])) {
             return;
         }
-        $cancel_url = add_query_arg(array('at8_mlucp_pay_notice' => 'cancelled'), at8_mlucp_get_account_url());
-        if (!empty($_GET['at8_mlucp_order'])) {
-            $c_order = (int) $_GET['at8_mlucp_order'];
-            if ('paywall' === (string) get_post_meta($c_order, '_at8_mlucp_pay_type', true)) {
-                $c_post = (int) get_post_meta($c_order, '_at8_mlucp_pay_post', true);
+        $cancel_url = add_query_arg(array('at8_mluc_pay_notice' => 'cancelled'), at8_mlucp_get_account_url());
+        if (!empty($_GET['at8_mluc_order'])) {
+            $c_order = (int) $_GET['at8_mluc_order'];
+            if ('paywall' === (string) get_post_meta($c_order, '_at8_mluc_pay_type', true)) {
+                $c_post = (int) get_post_meta($c_order, '_at8_mluc_pay_post', true);
                 if ($c_post && get_permalink($c_post)) {
-                    $cancel_url = add_query_arg(array('at8_mlucp_pay_notice' => 'cancelled'), get_permalink($c_post));
+                    $cancel_url = add_query_arg(array('at8_mluc_pay_notice' => 'cancelled'), get_permalink($c_post));
                 }
             }
         }
@@ -181,22 +181,22 @@ class AT8_MLUCP_Stripe
             exit;
         }
 
-        $order_id   = isset($_GET['at8_mlucp_order']) ? (int) $_GET['at8_mlucp_order'] : 0;
+        $order_id   = isset($_GET['at8_mluc_order']) ? (int) $_GET['at8_mluc_order'] : 0;
         $session_id = isset($_GET['session_id']) ? sanitize_text_field(wp_unslash($_GET['session_id'])) : '';
 
         // 回跳跳转基址：付费墙订单回文章页，会员订单回账户中心。
         $base = at8_mlucp_get_account_url();
-        if ($order_id > 0 && 'paywall' === (string) get_post_meta($order_id, '_at8_mlucp_pay_type', true)) {
-            $pw_post = (int) get_post_meta($order_id, '_at8_mlucp_pay_post', true);
+        if ($order_id > 0 && 'paywall' === (string) get_post_meta($order_id, '_at8_mluc_pay_type', true)) {
+            $pw_post = (int) get_post_meta($order_id, '_at8_mluc_pay_post', true);
             if ($pw_post && get_permalink($pw_post)) {
                 $base = get_permalink($pw_post);
             }
         }
-        $ok_url   = add_query_arg(array('at8_mlucp_pay_notice' => 'paid'), $base);
-        $fail_url = add_query_arg(array('at8_mlucp_pay_notice' => 'failed'), $base);
+        $ok_url   = add_query_arg(array('at8_mluc_pay_notice' => 'paid'), $base);
+        $fail_url = add_query_arg(array('at8_mluc_pay_notice' => 'failed'), $base);
 
         if ($order_id <= 0 || '' === $session_id
-            || (int) get_post_meta($order_id, '_at8_mlucp_pay_user', true) !== get_current_user_id()) {
+            || (int) get_post_meta($order_id, '_at8_mluc_pay_user', true) !== get_current_user_id()) {
             wp_safe_redirect($fail_url);
             exit;
         }
@@ -209,7 +209,7 @@ class AT8_MLUCP_Stripe
         self::fulfill($session);
 
         // paid 状态可能仍需 webhook 补齐（极少），回跳统一提示。
-        wp_safe_redirect('paid' === (string) get_post_meta($order_id, '_at8_mlucp_pay_status', true) ? $ok_url : $fail_url);
+        wp_safe_redirect('paid' === (string) get_post_meta($order_id, '_at8_mluc_pay_status', true) ? $ok_url : $fail_url);
         exit;
     }
 
@@ -285,16 +285,16 @@ class AT8_MLUCP_Stripe
             at8_mlucp_send_json(false, __('Stripe 支付未启用。', 'at8-moonlight-user-center-pro'));
         }
         $order_id = isset($_POST['order_id']) ? (int) $_POST['order_id'] : 0;
-        if ($order_id <= 0 || get_post_type($order_id) !== AT8_MLUCP_Payments::CPT
-            || (int) get_post_meta($order_id, '_at8_mlucp_pay_user', true) !== get_current_user_id()
-            || 'pending' !== (string) get_post_meta($order_id, '_at8_mlucp_pay_status', true)) {
+        if ($order_id <= 0 || get_post_type($order_id) !== AT8_MLUC_Payments::CPT
+            || (int) get_post_meta($order_id, '_at8_mluc_pay_user', true) !== get_current_user_id()
+            || 'pending' !== (string) get_post_meta($order_id, '_at8_mluc_pay_status', true)) {
             at8_mlucp_send_json(false, __('訂單無效或狀態已變更。', 'at8-moonlight-user-center-pro'));
         }
         $session = self::create_session($order_id);
         if (is_wp_error($session)) {
             at8_mlucp_send_json(false, $session->get_error_message());
         }
-        update_post_meta($order_id, '_at8_mlucp_pay_txn_ref', $session['id']);
+        update_post_meta($order_id, '_at8_mluc_pay_txn_ref', $session['id']);
         at8_mlucp_send_json(true, __('正在跳轉到 Stripe…', 'at8-moonlight-user-center-pro'), array('redirect' => $session['url']));
     }
 }

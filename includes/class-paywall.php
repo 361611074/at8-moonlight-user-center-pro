@@ -5,8 +5,8 @@
  * 自 moonlight-shop 的付费内容模块移植并独立化：
  *   - Meta Box「付费功能」：模式标签卡 + 通用配置 + 模式专属配置（post / page）。
  *   - 正文拦截：未购买时展示摘要 + 付费墙卡片；已购买追加专属资源（下载 / 图集 / 视频）。
- *   - 解锁记录：user meta `at8_mlucp_pay_unlocks`（post_id => 过期时间戳，0=永久）。
- *   - 订单：复用 at8_mlucp_order CPT（_at8_mlucp_pay_type=paywall，_at8_mlucp_pay_post=文章ID），
+ *   - 解锁记录：user meta `at8_mluc_pay_unlocks`（post_id => 过期时间戳，0=永久）。
+ *   - 订单：复用 at8_mluc_order CPT（_at8_mluc_pay_type=paywall，_at8_mluc_pay_post=文章ID），
  *     manual 线下转账 / PayPal / Stripe 全部复用现有网关与 complete_order 流程。
  *   - 下载端点：?at8_mlucp_pw_dl=TOKEN（transient 令牌，隐藏真实地址，二次校验解锁）。
  *
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 
 class AT8_MLUCP_Paywall
 {
-    const UNLOCK_META = 'at8_mlucp_pay_unlocks';
+    const UNLOCK_META = 'at8_mluc_pay_unlocks';
 
     /** @var array<string,string> 付费模式（后台标签）。 */
     public static $pay_modes = array(
@@ -59,6 +59,9 @@ class AT8_MLUCP_Paywall
         add_filter('rest_prepare_page', array($this, 'rest_prepare'), 10, 2);
         add_action('wp_ajax_at8_mlucp_pw_unlock', array($this, 'ajax_unlock'));
         add_action('wp_ajax_nopriv_at8_mlucp_pw_unlock', array($this, 'ajax_unlock'));
+        // 订单完成入口：免费插件的 AT8_MLUC_Payments::complete_order 在
+        // paywall 类型订单付款后通过该过滤器交货（原子抢占 + 解锁）。
+        add_filter('at8_mluc_complete_paywall_order', array($this, 'complete_paywall_order'), 10, 3);
         // 付费墙下载端点。
         add_action('template_redirect', array($this, 'handle_download'));
     }
@@ -198,14 +201,14 @@ class AT8_MLUCP_Paywall
         if ('' === $auth || 'all' === $auth) {
             return true;
         }
-        if (!class_exists('AT8_MLUCP_Membership')) {
+        if (!class_exists('AT8_MLUC_Membership')) {
             return false;
         }
-        $levels = AT8_MLUCP_Membership::get_levels();
+        $levels = AT8_MLUC_Membership::get_levels();
         if (!isset($levels[$auth])) {
             return true; // 等级已被删除：不设门槛
         }
-        $cur = (string) AT8_MLUCP_Membership::get_user_level($user_id);
+        $cur = (string) AT8_MLUC_Membership::get_user_level($user_id);
         $cur_order  = isset($levels[$cur]['sort_order']) ? (int) $levels[$cur]['sort_order'] : 0;
         $need_order = (int) $levels[$auth]['sort_order'];
         return $cur_order >= $need_order;
@@ -219,8 +222,8 @@ class AT8_MLUCP_Paywall
     public static function get_price_for_user($post_id, $user_id = 0)
     {
         $user_id = $user_id ? (int) $user_id : get_current_user_id();
-        if ($user_id && class_exists('AT8_MLUCP_Membership')) {
-            $level = (string) AT8_MLUCP_Membership::get_user_level($user_id);
+        if ($user_id && class_exists('AT8_MLUC_Membership')) {
+            $level = (string) AT8_MLUC_Membership::get_user_level($user_id);
             if ('' !== $level && 'free' !== $level) {
                 $lp = (float) get_post_meta($post_id, '_at8_mlucp_pw_price_' . $level, true);
                 if ($lp > 0) {
@@ -255,7 +258,42 @@ class AT8_MLUCP_Paywall
     }
 
     /**
-     * 订单完成入口（由 AT8_MLUCP_Payments::complete_order 在 paywall 类型时调用）。
+     * 订单完成入口（免费插件 AT8_MLUC_Payments::complete_order 的 paywall 分支）。
+     * 原子抢占：单条 UPDATE 仅在仍为 pending 时置为 paid，回跳与 webhook 并发时只有一个胜出。
+     *
+     * @param bool $handled   前一个过滤器是否已处理。
+     * @param int  $order_id  订单 ID。
+     * @param int  $user_id   买家。
+     * @return bool 是否已完成交货。
+     */
+    public function complete_paywall_order($handled, $order_id, $user_id)
+    {
+        if ($handled || !class_exists('AT8_MLUC_Payments')) {
+            return (bool) $handled;
+        }
+        $order_id = (int) $order_id;
+        if (get_post_type($order_id) !== AT8_MLUC_Payments::CPT) {
+            return false;
+        }
+        global $wpdb;
+        $claimed = $wpdb->query($wpdb->prepare(
+            "UPDATE {$wpdb->postmeta} SET meta_value = 'paid' WHERE post_id = %d AND meta_key = '_at8_mluc_pay_status' AND meta_value = 'pending'",
+            $order_id
+        ));
+        if (!$claimed) {
+            return false;
+        }
+        clean_post_cache($order_id);
+        if (!self::grant_for_order($order_id)) {
+            // 交货失败回滚状态，允许后续重试。
+            update_post_meta($order_id, '_at8_mluc_pay_status', 'pending');
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 订单完成入口（由 AT8_MLUC_Payments::complete_order 在 paywall 类型时调用）。
      * 幂等：同一订单只发一次货。
      */
     public static function grant_for_order($order_id)
@@ -264,8 +302,8 @@ class AT8_MLUCP_Paywall
         if (get_post_meta($order_id, '_at8_mlucp_pw_granted', true)) {
             return true;
         }
-        $post_id = (int) get_post_meta($order_id, '_at8_mlucp_pay_post', true);
-        $user_id = (int) get_post_meta($order_id, '_at8_mlucp_pay_user', true);
+        $post_id = (int) get_post_meta($order_id, '_at8_mluc_pay_post', true);
+        $user_id = (int) get_post_meta($order_id, '_at8_mluc_pay_user', true);
         if (!$post_id || !$user_id) {
             return false;
         }
@@ -654,8 +692,8 @@ class AT8_MLUCP_Paywall
         $auth_message = '';
         if ($is_logged_in && !$can_purchase) {
             $auth = (string) self::get($post_id, 'pay_auth', 'all');
-            $label = ('' !== $auth && 'all' !== $auth && class_exists('AT8_MLUCP_Membership'))
-                ? AT8_MLUCP_Membership::get_level_label($auth)
+            $label = ('' !== $auth && 'all' !== $auth && class_exists('AT8_MLUC_Membership'))
+                ? AT8_MLUC_Membership::get_level_label($auth)
                 : '';
             $auth_message = $label
                 ? sprintf(at8_mlucp_ui_label('pw_gated_level', 'This content is available to %s members and above. Please upgrade your membership.'), $label)
@@ -664,7 +702,7 @@ class AT8_MLUCP_Paywall
 
         $price    = self::get_price_for_user($post_id);
         $original = (float) self::get($post_id, 'price_original', 0);
-        $symbol   = class_exists('AT8_MLUCP_Payments') ? AT8_MLUCP_Payments::get_currency_symbol() : '$';
+        $symbol   = class_exists('AT8_MLUC_Payments') ? AT8_MLUC_Payments::get_currency_symbol() : '$';
         $fmt      = static function ($v) use ($symbol) {
             return $symbol . number_format((float) $v, 2);
         };
@@ -682,7 +720,7 @@ class AT8_MLUCP_Paywall
             $notes[] = sprintf(at8_mlucp_ui_label('pw_expire_note', 'Access expires %d %s after purchase.'), $value, $u);
         }
 
-        $gateways = class_exists('AT8_MLUCP_Payments') ? AT8_MLUCP_Payments::get_gateways() : array();
+        $gateways = class_exists('AT8_MLUC_Payments') ? AT8_MLUC_Payments::get_gateways() : array();
         $login_url = function_exists('at8_mlucp_get_login_url') ? at8_mlucp_get_login_url(get_permalink($post_id)) : wp_login_url(get_permalink($post_id));
 
         $paypal_on = class_exists('AT8_MLUCP_PayPal') && AT8_MLUCP_PayPal::enabled() && isset($gateways['paypal']);
@@ -741,7 +779,7 @@ class AT8_MLUCP_Paywall
                     <?php if ($manual_on) : ?>
                         <div class="at8-mlucp-pw-instructions" hidden>
                             <p class="at8-mlucp-pw-instructions-title"><?php echo esc_html(at8_mlucp_ui_label('pw_instructions_title', 'Payment Instructions')); ?></p>
-                            <div class="at8-mlucp-pw-instructions-body"><?php echo wp_kses_post(class_exists('AT8_MLUCP_Payments') ? AT8_MLUCP_Payments::get_instructions() : ''); ?></div>
+                            <div class="at8-mlucp-pw-instructions-body"><?php echo wp_kses_post(class_exists('AT8_MLUC_Payments') ? AT8_MLUC_Payments::get_instructions() : ''); ?></div>
                         </div>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -910,14 +948,14 @@ class AT8_MLUCP_Paywall
             at8_mlucp_send_json(false, at8_mlucp_ui_label('pw_no_price', 'This content has no price set and cannot be purchased yet.'));
         }
         $gw = isset($_POST['gateway']) ? sanitize_key(wp_unslash($_POST['gateway'])) : '';
-        $gateways = class_exists('AT8_MLUCP_Payments') ? AT8_MLUCP_Payments::get_gateways() : array();
+        $gateways = class_exists('AT8_MLUC_Payments') ? AT8_MLUC_Payments::get_gateways() : array();
         if ('' === $gw || !isset($gateways[$gw])) {
             at8_mlucp_send_json(false, at8_mlucp_ui_label('buy_invalid_gateway', 'Invalid payment method.'));
         }
 
         $user_id = get_current_user_id();
         $title = sprintf('PW-%s-%s', date_i18n('YmdHis'), get_the_title($post_id) ?: $post_id);
-        $cpt = class_exists('AT8_MLUCP_Payments') ? AT8_MLUCP_Payments::CPT : 'at8_mlucp_order';
+        $cpt = class_exists('AT8_MLUC_Payments') ? AT8_MLUC_Payments::CPT : 'at8_mluc_order';
 
         // 同一用户对同一文章已有待支付订单：复用，避免连点/重试堆出重复订单。
         $pending = get_posts(array(
@@ -929,17 +967,17 @@ class AT8_MLUCP_Paywall
             'order'          => 'DESC',
             'no_found_rows'  => true,
             'meta_query'     => array(
-                array('key' => '_at8_mlucp_pay_user', 'value' => $user_id),
-                array('key' => '_at8_mlucp_pay_type', 'value' => 'paywall'),
-                array('key' => '_at8_mlucp_pay_post', 'value' => $post_id),
-                array('key' => '_at8_mlucp_pay_status', 'value' => 'pending'),
+                array('key' => '_at8_mluc_pay_user', 'value' => $user_id),
+                array('key' => '_at8_mluc_pay_type', 'value' => 'paywall'),
+                array('key' => '_at8_mluc_pay_post', 'value' => $post_id),
+                array('key' => '_at8_mluc_pay_status', 'value' => 'pending'),
             ),
         ));
         if ($pending) {
             $order_id = (int) $pending[0];
-            update_post_meta($order_id, '_at8_mlucp_pay_title', get_the_title($post_id));
-            update_post_meta($order_id, '_at8_mlucp_pay_price', $price);
-            update_post_meta($order_id, '_at8_mlucp_pay_gateway', $gw);
+            update_post_meta($order_id, '_at8_mluc_pay_title', get_the_title($post_id));
+            update_post_meta($order_id, '_at8_mluc_pay_price', $price);
+            update_post_meta($order_id, '_at8_mluc_pay_gateway', $gw);
         } else {
             $order_id = wp_insert_post(array(
                 'post_type'   => $cpt,
@@ -950,16 +988,16 @@ class AT8_MLUCP_Paywall
             if (is_wp_error($order_id) || !$order_id) {
                 at8_mlucp_send_json(false, at8_mlucp_ui_label('buy_order_failed', 'Failed to create the order. Please try again later.'));
             }
-            update_post_meta($order_id, '_at8_mlucp_pay_user', $user_id);
-            update_post_meta($order_id, '_at8_mlucp_pay_type', 'paywall');
-            update_post_meta($order_id, '_at8_mlucp_pay_post', $post_id);
-            update_post_meta($order_id, '_at8_mlucp_pay_title', get_the_title($post_id));
-            update_post_meta($order_id, '_at8_mlucp_pay_price', $price);
-            update_post_meta($order_id, '_at8_mlucp_pay_gateway', $gw);
-            update_post_meta($order_id, '_at8_mlucp_pay_status', 'pending');
+            update_post_meta($order_id, '_at8_mluc_pay_user', $user_id);
+            update_post_meta($order_id, '_at8_mluc_pay_type', 'paywall');
+            update_post_meta($order_id, '_at8_mluc_pay_post', $post_id);
+            update_post_meta($order_id, '_at8_mluc_pay_title', get_the_title($post_id));
+            update_post_meta($order_id, '_at8_mluc_pay_price', $price);
+            update_post_meta($order_id, '_at8_mluc_pay_gateway', $gw);
+            update_post_meta($order_id, '_at8_mluc_pay_status', 'pending');
             do_action('at8_mlucp_pw_order_created', $order_id, $user_id, $post_id, $gw);
         }
-        update_post_meta($order_id, '_at8_mlucp_pay_status', 'pending');
+        update_post_meta($order_id, '_at8_mluc_pay_status', 'pending');
 
         if ('paypal' === $gw) {
             at8_mlucp_send_json(true, at8_mlucp_ui_label('buy_order_paypal', 'Order created. Please complete the PayPal payment.'), array(
@@ -970,10 +1008,10 @@ class AT8_MLUCP_Paywall
         if ('stripe' === $gw) {
             $session = AT8_MLUCP_Stripe::create_session($order_id);
             if (is_wp_error($session)) {
-                update_post_meta($order_id, '_at8_mlucp_pay_status', 'cancelled');
+                update_post_meta($order_id, '_at8_mluc_pay_status', 'cancelled');
                 at8_mlucp_send_json(false, $session->get_error_message());
             }
-            update_post_meta($order_id, '_at8_mlucp_pay_txn_ref', $session['id']);
+            update_post_meta($order_id, '_at8_mluc_pay_txn_ref', $session['id']);
             at8_mlucp_send_json(true, at8_mlucp_ui_label('pw_order_stripe', 'Order created. Redirecting to Stripe…'), array(
                 'order_id' => (int) $order_id,
                 'flow'     => 'stripe',
@@ -983,7 +1021,7 @@ class AT8_MLUCP_Paywall
 
         at8_mlucp_send_json(true, at8_mlucp_ui_label('pw_order_manual', 'Order created. Please complete the bank transfer as instructed. The content will be unlocked once the administrator confirms your payment.'), array(
             'order_id'     => (int) $order_id,
-            'instructions' => class_exists('AT8_MLUCP_Payments') ? AT8_MLUCP_Payments::get_instructions() : '',
+            'instructions' => class_exists('AT8_MLUC_Payments') ? AT8_MLUC_Payments::get_instructions() : '',
         ));
     }
 
@@ -1004,8 +1042,8 @@ class AT8_MLUCP_Paywall
             $val = get_post_meta($post->ID, '_at8_mlucp_pw_' . $name, true);
             $data[$name] = ('' === $val || false === $val) ? self::default_for($name) : $val;
         }
-        $symbol = class_exists('AT8_MLUCP_Payments') ? AT8_MLUCP_Payments::get_currency_symbol() : '$';
-        $levels = class_exists('AT8_MLUCP_Membership') ? AT8_MLUCP_Membership::get_levels() : array();
+        $symbol = class_exists('AT8_MLUC_Payments') ? AT8_MLUC_Payments::get_currency_symbol() : '$';
+        $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
 
         // 各等级会员价
         $level_prices = array();
@@ -1139,7 +1177,7 @@ class AT8_MLUCP_Paywall
 
         // 会员等级价（动态字段：at8_mlucp_pw_level_price[level]）。
         if (isset($_POST['at8_mlucp_pw_level_price']) && is_array($_POST['at8_mlucp_pw_level_price'])) {
-            $levels = class_exists('AT8_MLUCP_Membership') ? AT8_MLUCP_Membership::get_levels() : array();
+            $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
             foreach ($_POST['at8_mlucp_pw_level_price'] as $lk => $lp) {
                 $lk = sanitize_key($lk);
                 if ('' === $lk || 'free' === $lk || !isset($levels[$lk])) {
