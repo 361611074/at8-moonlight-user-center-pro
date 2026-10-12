@@ -3,7 +3,7 @@ Contributors: 361611074
 Tags: membership, paywall, payments, user center
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -46,17 +46,23 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 
 **Licensing**
 
-* Offline mode: signed keys validated locally, no external request
-* Server mode: point Pro at a license server for activation, heartbeat and updates; a 14-day grace period keeps Pro alive when the server is unreachable
+* Activation through the AT8 license center (www.at8.fun): domain binding, site limits and daily re-checks handled by the embedded AT8 License SDK
+* Grace period keeps Pro alive when the license center is unreachable
+* License-gated updates: new Pro packages are offered in the admin only while the license is valid and carries update access
 
 == Installation ==
 
 1. Install and activate AT8 Moonlight User Center (free).
 2. Upload this plugin to `wp-content/plugins/at8-moonlight-user-center-pro/` and activate it.
-3. Open User Center → License (Pro) and enter your license key.
+3. Open User Center → License (Pro) and enter your license code from the AT8 license center.
 4. Configure levels and gateways under User Center → Pro Settings.
 
 == Changelog ==
+
+= 1.1.0 =
+* Licensing moved to the embedded AT8 License SDK talking to the AT8 license center: activation, domain binding, daily re-checks, grace periods and license-gated updates.
+* Removed the 1.0.x offline key scheme and the self-hosted update channel; keys issued before 1.1.0 must be re-issued from the license center (existing data is kept).
+* The license screen stays under User Center → License (Pro), now powered by the SDK.
 
 = 1.0.0 =
 * First release: membership levels, paywall, hidden content, bank transfer / PayPal / Stripe payments, demo videos, materials, purchases, social login, Elementor widgets, license client with offline and server modes, self-hosted update channel.

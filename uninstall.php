@@ -25,17 +25,22 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
  */
 function at8_mlucp_uninstall_site() {
 	delete_option( 'at8_mlucp_options' );
+	// Legacy 1.0.x offline license record.
 	delete_option( 'at8_mlucp_license' );
 	delete_option( 'at8_mlucp_license_server' );
+	// Embedded AT8 License SDK state (at8lic_sdk_<product>_state).
+	delete_option( 'at8lic_sdk_at8-moonlight-user-center-pro_state' );
 
 	global $wpdb;
 
 	// Transients are hashed per caller, so they have to be matched by prefix.
 	$wpdb->query(
 		$wpdb->prepare(
-			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s",
 			'_transient_at8_mlucp_%',
-			'_transient_timeout_at8_mlucp_%'
+			'_transient_timeout_at8_mlucp_%',
+			'_transient_at8sdk_upd_at8-moonlight-user-center-pro%',
+			'_transient_timeout_at8sdk_upd_at8-moonlight-user-center-pro%'
 		)
 	);
 

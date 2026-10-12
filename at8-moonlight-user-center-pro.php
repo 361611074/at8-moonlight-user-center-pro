@@ -3,7 +3,7 @@
  * Plugin Name:       AT8 Moonlight User Center Pro
  * Plugin URI:        https://www.at8.fun/
  * Description:       Commercial add-on for AT8 Moonlight User Center: membership levels, paywall, hidden content, membership payments (bank transfer, PayPal, Stripe), demo videos, downloadable materials, purchases, social login and Elementor widgets. Requires the free plugin to be active.
- * Version:          1.0.0
+ * Version:          1.1.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            漫步白月光
@@ -25,12 +25,20 @@ defined( 'ABSPATH' ) || exit;
  * __DIR__ (never to a shared constant), so a constant defined elsewhere can
  * never redirect this plugin's class loading.
  */
-define( 'AT8_MLUCP_VERSION', '1.0.0' );
+define( 'AT8_MLUCP_VERSION', '1.1.0' );
 define( 'AT8_MLUCP_PLUGIN_FILE', __FILE__ );
 define( 'AT8_MLUCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AT8_MLUCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once AT8_MLUCP_PLUGIN_DIR . 'includes/functions.php';
+
+/*
+ * AT8 License SDK (embedded, unmodified): license activation, domain binding,
+ * daily re-checks, grace periods and license-gated updates all go through the
+ * shared SDK against the vendor license center. The SDK keeps its own
+ * class_exists guards, so several AT8 products can coexist on one site.
+ */
+require_once AT8_MLUCP_PLUGIN_DIR . 'sdk/at8-license-sdk.php';
 
 /**
  * Register the plugin autoloader.
@@ -91,8 +99,35 @@ function at8_mlucp_bootstrap() {
 		return;
 	}
 
-	// The license screen must work regardless of the license state.
-	AT8_MLUCP_License::get_instance();
+	// License handling lives in the embedded SDK: it registers its own
+	// activation screen (mounted under the free plugin's menu), the daily
+	// re-check cron and the license-gated updater. This must run before any
+	// is_valid() call.
+	AT8_License_SDK::init(
+		array(
+			'server_url'   => 'https://www.at8.fun',
+			'product'      => 'at8-moonlight-user-center-pro',
+			'product_type' => 'plugin',
+			'plugin_file'  => AT8_MLUCP_PLUGIN_FILE,
+			'buy_url'      => 'https://www.at8.fun/store/',
+			// Literal titles: the SDK registers its page on admin_menu, and
+			// translating here (plugins_loaded) would trigger a too-early
+			// textdomain load notice on WP 6.7+.
+			'menu'         => array(
+				'parent'     => 'at8-mluc-settings',
+				'page_title' => 'License（Pro）',
+				'menu_title' => 'License（Pro）',
+			),
+			'menu_slug'    => 'at8-mlucp-license',
+			'text_domain'  => 'at8-moonlight-user-center-pro',
+			'update'       => true,
+		)
+	);
+
+	// Migration notice for keys issued by the retired offline scheme (1.0.x):
+	// those keys cannot be validated by the license center and must be
+	// re-issued from it.
+	AT8_MLUCP_License::maybe_legacy_notice();
 
 	if ( ! AT8_MLUCP_License::is_active() ) {
 		AT8_MLUCP_Settings::get_instance();
@@ -118,7 +153,6 @@ function at8_mlucp_bootstrap() {
 	AT8_MLUCP_Material::get_instance();
 	AT8_MLUCP_OAuth::get_instance();
 	AT8_MLUCP_Editor_Button::get_instance();
-	AT8_MLUCP_Updater::get_instance();
 
 	if ( did_action( 'elementor/loaded' ) ) {
 		AT8_MLUCP_Elementor::get_instance();
@@ -130,8 +164,7 @@ function at8_mlucp_bootstrap() {
 			return AT8_MLUCP_License::is_active();
 		}
 	);
-}
-add_action( 'plugins_loaded', 'at8_mlucp_bootstrap', 6 );
+}add_action( 'plugins_loaded', 'at8_mlucp_bootstrap', 6 );
 
 register_activation_hook( __FILE__, array( 'AT8_MLUCP_Activator', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'AT8_MLUCP_Activator', 'deactivate' ) );

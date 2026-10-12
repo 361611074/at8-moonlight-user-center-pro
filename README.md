@@ -2,7 +2,7 @@
 
 「AT8 Moonlight User Center」（Free 版）的商业化扩展插件。本仓库即插件根目录，上传后作为**独立插件**在 WordPress 后台启用；需先安装并启用 Free 版。
 
-- 版本：1.0.0
+- 版本：1.1.0
 - 授权：GPL-2.0-or-later
 - 依赖：**必须先安装并启用** AT8 Moonlight User Center（Free 版）2.0.0+
 - 作者：漫步白月光 · https://www.at8.fun/
@@ -24,43 +24,53 @@
 | Elementor | 登录 / 注册 / 个人资料三个小工具 |
 | 编辑器按钮 | 文章编辑器「隐藏内容」下拉，快速插入四种 hidecontent 短代码 |
 
-## 授权体系
+## 授权体系（1.1.0 起：AT8 License SDK）
 
-两种模式，在「用户中心 → Pro 设置 → License 服务器」切换：
+授权全部交给内嵌的 **AT8 License SDK**（`sdk/` 目录，原样嵌入、不做修改），对接 **at8-license-server-v2** 授权中心（www.at8.fun）：
 
-1. **离线模式（默认）**：Key 自身携带签名（`AT8ML-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-SIGN`，前六段为 base32 编码的紧凑负载 `mlucp|到期时间戳`，末段为 HMAC-SHA256 签名前缀）。全程本地校验，不发任何外部请求。方便线下交付；需如实告知：与所有纯本地方案一样，签名可被逆向提取，防不住针对性破解。
-2. **服务器模式**：填写授权服务器地址后，激活 / 校验 / 更新全部走 REST（Key 只放 POST body，不进 URL）。校验结果缓存 12 小时；**服务器不可达 ≠ 授权失效**——进入 14 天宽限期，期间 Pro 功能照常，只有服务端明确吊销才立即停用。
+- 产品 slug：`at8-moonlight-user-center-pro`（授权中心后台「产品」须与此一致）
+- 授权码格式 `AT8-XXXXX-XXXXX-XXXXX-XXXXX`，购买后从授权中心获得
+- 激活 / 域名绑定 / 站点数限制 / 每日复查（WP-Cron）/ 宽限期 / 解绑 / 域名转移，全部由 SDK 处理
+- `is_valid()` 只读本地状态（带 HMAC 签名，防数据库篡改），页面加载零 HTTP 请求
+- 授权中心不可达 ≠ 授权失效：进入宽限期，Pro 照常；明确吊销 / 过期才停用，数据保留
+- 授权制自动更新：授权有效且套餐含更新权益时，后台出现更新提示；下载走 SDK 托管通道（短时令牌 + SHA-256 完整性校验）
+- 本地开发环境（localhost / *.local / *.test）激活不占正式席位（套餐另含 dev_sites 额度）
+- 授权页位置不变：「用户中心 → License（Pro）」，由 SDK 自动注册
 
-授权服务器（`at8-license-server`）提供 `activate` / `deactivate` / `validate` / `update` / `package` 端点，后续单独交付。
+**1.0.x 迁移说明**：旧离线签名 Key（`AT8ML-…`）不再被识别，需在授权中心重新发码激活；旧授权记录保留但仅用于弹出一次性迁移提示，删除插件时清理。
 
 ## 与 Free 的边界
 
 - Pro 只通过 Free 的公开钩子交互：`at8_mluc_account_tabs`（挂 tab）、`at8_mluc_login_form_bottom` / `at8_mluc_register_form_bottom`（挂社交登录按钮）、`at8_mluc_is_pro`（授权总开关）。
 - Free 缺失时 Pro 只弹后台提示，不产生致命错误；授权失效时仅保留 License 与设置两个页面，商业模块完全休眠。
 - 类前缀 `AT8_MLUCP_`、函数前缀 `at8_mlucp_`、选项 `at8_mlucp_options`、CPT `at8_mlucp_*`、文本域 `at8-moonlight-user-center-pro`，与 Free 完全隔离，可独立启停。
+- SDK 类前缀 `AT8SDK_` / `AT8_License_SDK`，自带 class_exists 守卫，多个 AT8 产品可并存。
 - Free 未授权、未安装的任何情况下都完整可用（登录、注册、账户中心、头像、菜单）。
 
 ## 安装
 
 1. 确认「AT8 Moonlight User Center」已启用；
 2. 将本仓库内容上传至 `wp-content/plugins/at8-moonlight-user-center-pro/`；
-3. 启用本插件，进入「用户中心 → License（Pro）」输入 License Key 激活；
+3. 启用本插件，进入「用户中心 → License（Pro）」输入授权中心签发的授权码激活；
 4. 「用户中心 → Pro 设置」配置会员等级与支付网关。
 
-## License Key 获取
+## 授权码获取
 
-- 从 at8.fun 购买后获得绑定站点的 Key；
-- 迁移域名前先在 License 页停用，再在新站点激活。
+- 从 at8.fun 购买后，授权中心自动发码（绑定产品与套餐）；
+- 迁移域名前先在 License 页解绑本站，或直接使用「域名转移」；
+- 授权中心后台：产品 → 套餐 → 上传 Pro 安装包（启用自动更新必需）。
 
 ## 目录结构
 
 ```
 at8-moonlight-user-center-pro/
-├── at8-moonlight-user-center-pro.php   主文件（Update URI 指向自有更新通道）
+├── at8-moonlight-user-center-pro.php   主文件（SDK init + 模块启动）
+├── sdk/                                AT8 License SDK（原样嵌入，勿改）
+│   ├── at8-license-sdk.php
+│   └── includes/                       Config / Client / License / Scheduler / AdminPage / Updater …
 ├── includes/
 │   ├── functions.php                   Pro 辅助函数 + Free 桥接
-│   ├── class-license.php               授权（离线签名 + 远程 REST 双模式）
-│   ├── class-updater.php               自建更新通道
+│   ├── class-license.php               SDK 薄壳（is_active 门控 + 旧 Key 迁移提示）
 │   ├── class-settings.php              Pro 设置页（挂在 Free 菜单下）
 │   ├── class-activator.php             激活/停用
 │   ├── class-membership.php            会员等级系统
@@ -77,10 +87,10 @@ at8-moonlight-user-center-pro/
 ├── templates/                          account-membership / membership-purchase / paywall-meta
 ├── assets/                             at8-mlucp.css / at8-mlucp.js / at8-mlucp-admin.js / at8-mlucp-pw-admin.js / at8-mlucp-tinymce.js
 ├── languages/
-├── uninstall.php                       多站点安全清理
+├── uninstall.php                       多站点安全清理（含 SDK 状态）
 └── readme.txt
 ```
 
 ## License
 
-GPL-2.0-or-later。Key 的签名与授权服务器实现不属于插件分发内容。
+GPL-2.0-or-later。`sdk/` 目录为自研构建产物，随插件分发。

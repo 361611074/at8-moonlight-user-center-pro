@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AT8 Moonlight User Center Pro 1.0.0\n"
+"Project-Id-Version: AT8 Moonlight User Center Pro 1.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/at8-moonlight-user-center-pro\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-12T11:09:59+00:00\n"
+"POT-Creation-Date: 2026-10-12T11:27:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: at8-moonlight-user-center-pro\n"
@@ -36,7 +36,7 @@ msgstr ""
 msgid "漫步白月光"
 msgstr ""
 
-#: at8-moonlight-user-center-pro.php:87
+#: at8-moonlight-user-center-pro.php:95
 msgid "AT8 Moonlight User Center Pro requires the free plugin AT8 Moonlight User Center to be installed and active."
 msgstr ""
 
@@ -108,151 +108,21 @@ msgstr ""
 msgid "Your comment must be approved before the content is revealed."
 msgstr ""
 
-#: includes/class-license.php:198
-#: includes/class-license.php:199
-#: includes/class-license.php:230
-msgid "License（Pro）"
-msgstr ""
-
-#: includes/class-license.php:221
-msgid "Active"
-msgstr ""
-
-#: includes/class-license.php:222
-msgid "Active (server unreachable, grace period)"
-msgstr ""
-
-#: includes/class-license.php:223
-msgid "Expired"
-msgstr ""
-
-#: includes/class-license.php:224
-msgid "Revoked"
-msgstr ""
-
-#: includes/class-license.php:225
-msgid "Invalid key"
-msgstr ""
-
-#: includes/class-license.php:226
+#: includes/class-license.php:61
 msgid "Not activated"
 msgstr ""
 
-#: includes/class-license.php:235
-msgid "Product"
+#: includes/class-license.php:94
+msgid "License format changed in version 1.1.0."
 msgstr ""
 
-#: includes/class-license.php:239
-msgid "State"
+#: includes/class-license.php:95
+msgid "Keys issued before this version are no longer valid. Please get a new license code from the license center and activate it."
 msgstr ""
 
-#: includes/class-license.php:243
-msgid "License Key"
-msgstr ""
-
-#: includes/class-license.php:247
-msgid "Expires"
-msgstr ""
-
-#: includes/class-license.php:253
-msgid "Never"
-msgstr ""
-
-#: includes/class-license.php:259
-msgid "Bound site"
-msgstr ""
-
-#: includes/class-license.php:263
-#: includes/class-settings.php:395
-msgid "Mode"
-msgstr ""
-
-#: includes/class-license.php:267
-msgid "License server"
-msgstr ""
-
-#: includes/class-license.php:270
-msgid "Offline (signed key)"
-msgstr ""
-
-#: includes/class-license.php:278
-msgid "Activate License"
-msgstr ""
-
-#: includes/class-license.php:284
-msgid "Activate"
-msgstr ""
-
-#: includes/class-license.php:286
-msgid "Enter the key you received on purchase. The key binds to this site; deactivate before migrating to another domain."
-msgstr ""
-
-#: includes/class-license.php:290
-msgid "Deactivate License"
-msgstr ""
-
-#: includes/class-license.php:291
-msgid "Deactivating disables every Pro feature immediately. Continue?"
-msgstr ""
-
-#: includes/class-license.php:294
-msgid "Deactivate"
-msgstr ""
-
-#: includes/class-license.php:331
-#: includes/class-license.php:372
-msgid "Permission denied or security check failed."
-msgstr ""
-
-#: includes/class-license.php:339
-msgid "Please enter a license key."
-msgstr ""
-
-#: includes/class-license.php:349
-msgid "License activated. Pro features are now available."
-msgstr ""
-
-#: includes/class-license.php:384
-msgid "License deactivated. Pro features are disabled."
-msgstr ""
-
-#: includes/class-license.php:409
-#: includes/class-license.php:522
-#: includes/class-license.php:529
-msgid "The key format is not recognised."
-msgstr ""
-
-#: includes/class-license.php:441
-msgid "This key belongs to a different product."
-msgstr ""
-
-#: includes/class-license.php:445
-msgid "This key has expired."
-msgstr ""
-
-#: includes/class-license.php:535
-msgid "The key signature is invalid."
-msgstr ""
-
-#: includes/class-license.php:541
-#: includes/class-license.php:554
-msgid "The key payload could not be read."
-msgstr ""
-
-#: includes/class-license.php:616
-msgid "The license server URL is not valid."
-msgstr ""
-
-#: includes/class-license.php:638
-msgid "The license server could not be reached."
-msgstr ""
-
-#: includes/class-license.php:644
-msgid "The license server rejected the request."
-msgstr ""
-
-#: includes/class-license.php:650
-msgid "The license server sent an unreadable response."
+#: includes/class-license.php:97
+#: includes/class-settings.php:499
+msgid "Manage license"
 msgstr ""
 
 #: includes/class-material.php:113
@@ -773,7 +643,7 @@ msgid "You have no purchases yet."
 msgstr ""
 
 #: includes/class-settings.php:73
-#: includes/class-settings.php:544
+#: includes/class-settings.php:504
 msgid "User Center Pro Settings"
 msgstr ""
 
@@ -782,232 +652,216 @@ msgstr ""
 msgid "Pro Settings"
 msgstr ""
 
-#: includes/class-settings.php:131
+#: includes/class-settings.php:123
 #: templates/account-membership.php:62
 #: templates/account-membership.php:63
 msgid "Membership Levels"
 msgstr ""
 
-#: includes/class-settings.php:137
+#: includes/class-settings.php:129
 msgid "Level definitions"
 msgstr ""
 
-#: includes/class-settings.php:145
+#: includes/class-settings.php:137
 msgid "Offline Payment"
 msgstr ""
 
-#: includes/class-settings.php:151
+#: includes/class-settings.php:143
 msgid "Bank transfer"
 msgstr ""
 
-#: includes/class-settings.php:159
+#: includes/class-settings.php:151
 msgid "Online Payment (PayPal / Stripe)"
 msgstr ""
 
-#: includes/class-settings.php:165
+#: includes/class-settings.php:157
 msgid "Gateway credentials"
 msgstr ""
 
-#: includes/class-settings.php:173
+#: includes/class-settings.php:165
 msgid "Orders"
 msgstr ""
 
-#: includes/class-settings.php:179
+#: includes/class-settings.php:171
 msgid "Auto-close timeout"
 msgstr ""
 
-#: includes/class-settings.php:187
+#: includes/class-settings.php:179
 msgid "Social Login"
 msgstr ""
 
-#: includes/class-settings.php:193
+#: includes/class-settings.php:185
 msgid "OAuth credentials"
 msgstr ""
 
-#: includes/class-settings.php:201
-msgid "License Server (optional)"
-msgstr ""
-
-#: includes/class-settings.php:207
-msgid "Remote validation"
-msgstr ""
-
-#: includes/class-settings.php:241
+#: includes/class-settings.php:219
 msgid "The membership module is not loaded."
 msgstr ""
 
-#: includes/class-settings.php:259
+#: includes/class-settings.php:237
 msgid "Enable the free base level"
 msgstr ""
 
-#: includes/class-settings.php:263
+#: includes/class-settings.php:241
 msgid "When off, only paid levels remain: visitors without a membership hold no level at all. Content marked \"free\" stays visible to everyone either way."
 msgstr ""
 
-#: includes/class-settings.php:266
+#: includes/class-settings.php:244
 msgid "Add, edit or remove levels here. Deleting a level downgrades everyone who held it; deleting the free level is the same as switching the base level off above. Price and validity drive the purchase flow."
 msgstr ""
 
-#: includes/class-settings.php:271
+#: includes/class-settings.php:249
 msgid "Key"
 msgstr ""
 
-#: includes/class-settings.php:272
-#: includes/class-settings.php:326
+#: includes/class-settings.php:250
+#: includes/class-settings.php:304
 msgid "Label"
 msgstr ""
 
-#: includes/class-settings.php:273
+#: includes/class-settings.php:251
 msgid "Price"
 msgstr ""
 
-#: includes/class-settings.php:274
+#: includes/class-settings.php:252
 msgid "Validity (days)"
 msgstr ""
 
-#: includes/class-settings.php:275
+#: includes/class-settings.php:253
 msgid "Colour"
 msgstr ""
 
-#: includes/class-settings.php:276
+#: includes/class-settings.php:254
 msgid "Sort"
 msgstr ""
 
-#: includes/class-settings.php:277
+#: includes/class-settings.php:255
 msgid "Action"
 msgstr ""
 
-#: includes/class-settings.php:294
+#: includes/class-settings.php:272
 msgid "base"
 msgstr ""
 
-#: includes/class-settings.php:306
+#: includes/class-settings.php:284
 msgid "forever"
 msgstr ""
 
-#: includes/class-settings.php:314
-#: includes/class-settings.php:331
+#: includes/class-settings.php:292
+#: includes/class-settings.php:309
 msgid "Delete"
 msgstr ""
 
-#: includes/class-settings.php:315
+#: includes/class-settings.php:293
 msgid "deleting the base level disables it"
 msgstr ""
 
-#: includes/class-settings.php:321
+#: includes/class-settings.php:299
 msgid "+ Add level"
 msgstr ""
 
-#: includes/class-settings.php:350
+#: includes/class-settings.php:328
 msgid "Enable bank transfer (the admin confirms payment manually)"
 msgstr ""
 
-#: includes/class-settings.php:354
+#: includes/class-settings.php:332
 msgid "Currency symbol"
 msgstr ""
 
-#: includes/class-settings.php:358
+#: includes/class-settings.php:336
 msgid "Transfer instructions"
 msgstr ""
 
-#: includes/class-settings.php:360
+#: includes/class-settings.php:338
 msgid "Shown to the buyer after an offline order is created. Leave empty for the built-in default."
 msgstr ""
 
-#: includes/class-settings.php:383
+#: includes/class-settings.php:361
 msgid "Currency code (ISO 4217, shared by both gateways)"
 msgstr ""
 
-#: includes/class-settings.php:385
+#: includes/class-settings.php:363
 msgid "For example USD / HKD / EUR / JPY. Must match the currency of the level prices."
 msgstr ""
 
-#: includes/class-settings.php:391
+#: includes/class-settings.php:369
 msgid "Enable PayPal (Smart Buttons, server-side capture)"
 msgstr ""
 
-#: includes/class-settings.php:397
+#: includes/class-settings.php:373
+msgid "Mode"
+msgstr ""
+
+#: includes/class-settings.php:375
 msgid "Sandbox"
 msgstr ""
 
-#: includes/class-settings.php:398
+#: includes/class-settings.php:376
 msgid "Live"
 msgstr ""
 
-#: includes/class-settings.php:402
+#: includes/class-settings.php:380
 msgid "Client ID"
 msgstr ""
 
-#: includes/class-settings.php:406
+#: includes/class-settings.php:384
 msgid "Secret"
 msgstr ""
 
-#: includes/class-settings.php:413
+#: includes/class-settings.php:391
 msgid "Enable Stripe (hosted Checkout, cards / Apple Pay / Google Pay)"
 msgstr ""
 
-#: includes/class-settings.php:417
+#: includes/class-settings.php:395
 msgid "Publishable Key"
 msgstr ""
 
-#: includes/class-settings.php:421
+#: includes/class-settings.php:399
 msgid "Secret Key"
 msgstr ""
 
-#: includes/class-settings.php:425
+#: includes/class-settings.php:403
 msgid "Webhook signing secret (optional, fallback fulfilment)"
 msgstr ""
 
 #. translators: %s: webhook endpoint URL
-#: includes/class-settings.php:432
+#: includes/class-settings.php:410
 #, php-format
 msgid "For webhook fallback, add the endpoint %s in the Stripe dashboard, subscribe to checkout.session.completed and paste the signing secret above."
 msgstr ""
 
-#: includes/class-settings.php:449
+#: includes/class-settings.php:427
 msgid "Close pending orders older than (hours)"
 msgstr ""
 
-#: includes/class-settings.php:451
+#: includes/class-settings.php:429
 msgid "0 disables auto-closing. Never set this below 24 hours: an in-flight Stripe Checkout session can last that long."
 msgstr ""
 
-#: includes/class-settings.php:463
+#: includes/class-settings.php:441
 msgid "The social login module is not loaded."
 msgstr ""
 
 #. translators: %s: example callback URL
-#: includes/class-settings.php:475
+#: includes/class-settings.php:453
 #, php-format
 msgid "Register the callback URL (example: %s) on the provider platform. Only providers with both a client ID and a secret appear as front-end login buttons."
 msgstr ""
 
-#: includes/class-settings.php:483
+#: includes/class-settings.php:461
 msgid "Provider"
 msgstr ""
 
-#: includes/class-settings.php:484
+#: includes/class-settings.php:462
 msgid "Client ID / App ID"
 msgstr ""
 
-#: includes/class-settings.php:485
+#: includes/class-settings.php:463
 msgid "Client Secret"
 msgstr ""
 
-#: includes/class-settings.php:515
-msgid "License server URL"
-msgstr ""
-
-#: includes/class-settings.php:519
-msgid "Leave empty for offline mode: signed keys are validated locally and no request leaves this site. When set, activation, heartbeat and updates go to that server; an unreachable server grants a 14-day grace period instead of disabling Pro."
-msgstr ""
-
-#: includes/class-settings.php:537
+#: includes/class-settings.php:497
 msgid "Pro features are inactive because no valid license is active."
-msgstr ""
-
-#: includes/class-settings.php:539
-msgid "Manage license"
 msgstr ""
 
 #: includes/class-stripe.php:98

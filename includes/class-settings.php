@@ -114,17 +114,9 @@ class AT8_MLUCP_Settings {
 			)
 		);
 
-		// Registered in the same group so options.php persists it next to the
-		// main option blob, but it lives in its own option key: the license
-		// class reads it on every check, independent of the settings blob.
-		register_setting(
-			self::OPTION_GROUP,
-			AT8_MLUCP_License::SERVER_OPTION_KEY,
-			array(
-				'sanitize_callback' => 'esc_url_raw',
-				'default'           => '',
-			)
-		);
+		// Licensing (activation screen, server communication and updates) is
+		// owned by the embedded AT8 License SDK; the settings screen only
+		// handles commercial module configuration.
 
 		add_settings_section(
 			'at8_mlucp_membership',
@@ -194,20 +186,6 @@ class AT8_MLUCP_Settings {
 			array( $this, 'render_oauth_field' ),
 			self::PAGE,
 			'at8_mlucp_oauth'
-		);
-
-		add_settings_section(
-			'at8_mlucp_license_server',
-			__( 'License Server (optional)', 'at8-moonlight-user-center-pro' ),
-			'__return_false',
-			self::PAGE
-		);
-		add_settings_field(
-			'at8_mlucp_license_server',
-			__( 'Remote validation', 'at8-moonlight-user-center-pro' ),
-			array( $this, 'render_server_field' ),
-			self::PAGE,
-			'at8_mlucp_license_server'
 		);
 	}
 
@@ -500,24 +478,6 @@ class AT8_MLUCP_Settings {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<?php
-	}
-
-	/**
-	 * Render the license server field.
-	 *
-	 * @return void
-	 */
-	public function render_server_field() {
-		$server = AT8_MLUCP_License::get_server();
-		?>
-		<p>
-			<label for="at8_mlucp_license_server"><?php esc_html_e( 'License server URL', 'at8-moonlight-user-center-pro' ); ?></label><br>
-			<input type="url" id="at8_mlucp_license_server" class="large-text code" name="at8_mlucp_license_server" value="<?php echo esc_attr( $server ); ?>" placeholder="https://license.example.com/" autocomplete="off">
-		</p>
-		<p class="description">
-			<?php esc_html_e( 'Leave empty for offline mode: signed keys are validated locally and no request leaves this site. When set, activation, heartbeat and updates go to that server; an unreachable server grants a 14-day grace period instead of disabling Pro.', 'at8-moonlight-user-center-pro' ); ?>
-		</p>
 		<?php
 	}
 
