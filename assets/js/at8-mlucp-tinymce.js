@@ -1,5 +1,5 @@
 /**
- * TinyMCE 插件：插入 [at8_mlucp_hide type="X"]...[/at8_mlucp_hide] 短代码。
+ * TinyMCE 插件：插入 [at8_mluc_hide type="X"]...[/at8_mluc_hide] 短代码。
  *
  * 经典 API（addButton / addMenuItem）兼容 TinyMCE 4/6，WP 6+ 默认 TinyMCE 6。
  * 按钮渲染为下拉菜单，4 个 type 与类 AT8_MLUCP_Hidecontent::$types 一一对应。
@@ -19,13 +19,11 @@
         ? window.at8_mlucp_tinymce_i18n
         : {};
 
-    var TYPES = (Array.isArray(i18n.types) && i18n.types.length === 4)
+    var TYPES = (Array.isArray(i18n.types) && i18n.types.length > 0)
         ? i18n.types
         : [
-            { value: 'reply',   label: '评论后可查看' },
-            { value: 'logged',  label: '登录后可查看' },
-            { value: 'vip1',    label: '会员可查看' },
-            { value: 'payshow', label: '付费后可查看' }
+            { value: 'vip1',    label: 'Members Only' },
+            { value: 'payshow', label: 'Purchase to View' }
         ];
 
     var BUTTON_LABEL = i18n.button_label || '隐藏内容';
@@ -63,12 +61,12 @@
     });
 
     /**
-     * 在编辑器光标处插入 [at8_mlucp_hide type="X"]...[/at8_mlucp_hide]。
+     * 在编辑器光标处插入 [at8_mluc_hide type="X"]...[/at8_mluc_hide]。
      * 插入后光标自动落在短代码之后，便于继续输入。
      */
     function insertShortcode(editor, type, label) {
-        var openTag  = '[at8_mlucp_hide type="' + type + '"]';
-        var closeTag = '[/at8_mlucp_hide]';
+        var openTag  = '[at8_mluc_hide type="' + type + '"]';
+        var closeTag = '[/at8_mluc_hide]';
         var placeholder = '在此处输入仅 ' + label + ' 才可见的内容…';
         var snippet = openTag + placeholder + closeTag;
 

@@ -1,16 +1,13 @@
 <?php
 /**
- * [at8_mlucp_hide] 短代码 + 内容过滤。
+ * Pro 隐藏内容扩展：会员 / 付费两型。
  *
- * 用法：[at8_mlucp_hide type="reply|logged|vip1|payshow"]...[/hidecontent]
- *   - reply    评论后可查看（当前用户已通过审核的评论即可解锁）
- *   - logged   登录后可查看
- *   - vip1     会员可查看（>=月费等级且未过期）
- *   - payshow  付费后可查看（商城付费墙已解锁 / 月费会员以上）
+ * 类型注册、权限判定与 CTA 渲染全部通过 Free 插件的扩展点注入
+ * （at8_mluc_hide_types / at8_mluc_hide_user_can_view / at8_mluc_hide_cta_html），
+ * 前台短码统一为 [at8_mluc_hide]。
  *
- * 嵌套安全：渲染时对 $content 递归 do_shortcode，避免内层 shortcode 被外层吞掉。
- * Elementor 兼容：同时挂 elementor/frontend/the_content 与 elementor/widget/render_content
- *   （优先级 5，早于 do_shortcode 的 p11），保证 Elementor 文本小工具里的短代码也会被执行。
+ * 兼容：1.0.x 的 [at8_mlucp_hide] 短码名与旧文章内容继续可用（别名 +
+ * 旧内容过滤），无需批量替换。
  *
  * @package AT8_Moonlight_User_Center_Pro
  */
@@ -21,12 +18,10 @@ if (!defined('ABSPATH')) {
 
 class AT8_MLUCP_Hidecontent
 {
-    /** 类型注册表。 */
+    /** Pro 专有类型。 */
     public static $types = array(
-        'reply'   => array('label' => '评论后可查看', 'cta' => 'Comment to View', 'icon' => '💬'),
-        'logged'  => array('label' => '登录后可查看', 'cta' => 'Log in to View', 'icon' => '🔒'),
-        'vip1'    => array('label' => '会员可查看',   'cta' => 'Upgrade Membership', 'icon' => '⭐'),
-        'payshow' => array('label' => '付费后可查看', 'cta' => 'Buy Now', 'icon' => '💎'),
+        'vip1'    => array('label' => '会员可查看',   'cta' => 'Members Only',       'icon' => '⭐'),
+        'payshow' => array('label' => '付费后可查看', 'cta' => 'Purchase to View',   'icon' => '💎'),
     );
 
     public static function get_instance()
@@ -40,84 +35,105 @@ class AT8_MLUCP_Hidecontent
 
     private function __construct()
     {
-        add_shortcode('at8_mlucp_hide', array($this, 'render'));
-        // 标准内容链 p5：早于 WP 默认 do_shortcode (p11)，先把短代码消化掉
-        // （do_shortcode 幂等：第二次执行已找不到 shortcode 标签，所以不会重复渲染）
-        add_filter('the_content', array($this, 'maybe_filter'), 5);
-        // Elementor 兼容：文本小工具 / Elementor 渲染链
-        add_filter('elementor/frontend/the_content', array($this, 'maybe_filter'), 5);
-        add_filter('elementor/widget/render_content', array($this, 'maybe_filter'), 5);
+        // Free 扩展点：注册类型、权限判定、CTA 渲染。
+        add_filter('at8_mluc_hide_types', array($this, 'register_types'));
+        add_filter('at8_mluc_hide_user_can_view', array($this, 'user_can_view'), 10, 2);
+        add_filter('at8_mluc_hide_cta_html', array($this, 'render_cta_html'), 10, 2);
     }
 
     /**
-     * the_content 过滤器：仅在含 [at8_mlucp_hide] 的内容上跑一次 do_shortcode。
+     * 向 Free 注册 Pro 类型。
      */
-    public function maybe_filter($content)
+    public function register_types($types)
     {
-        if (!is_string($content) || strpos($content, '[at8_mlucp_hide') === false) {
-            return $content;
-        }
-        return do_shortcode($content);
+        return array_merge((array) $types, self::$types);
     }
 
     /**
-     * 短代码渲染。
+     * Pro 类型的查看权限。
+     *
+     * @param bool   $can_view Free 的默认判定（false）。
+     * @param string $type    类型键。
      */
-    public function render($atts, $content = '')
+    public function user_can_view($can_view, $type)
     {
-        $atts = shortcode_atts(
-            array('type' => 'logged'),
-            $atts,
-            'hidecontent'
-        );
-        $type = isset($atts['type']) ? (string) $atts['type'] : 'logged';
-        if (!isset(self::$types[$type])) {
-            $type = 'logged';
-        }
-
-        // 嵌套安全：内层 shortcode 也跑一次
-        $inner = do_shortcode($content);
-
-        if (self::user_can_view($type)) {
-            return $inner;
-        }
-        return self::render_cta($type);
-    }
-
-    /**
-     * 当前访问者是否有权查看指定类型的隐藏内容。
-     */
-    public static function user_can_view($type)
-    {
-        // 作者本人 / 管理员永远可见，便于预览与排错。
-        // 安全：原用 edit_posts 判断，投稿者/作者等低权限角色也能看到全站任意文章的
-        // 隐藏内容（权限过宽）。改为：作者本人，或具备编辑他人文章权限的角色。
-        if (is_user_logged_in()
-            && (current_user_can('edit_others_posts') || current_user_can('manage_options') || self::is_current_post_author())) {
-            return true;
-        }
-
         switch ($type) {
-            case 'logged':
-                return is_user_logged_in();
-
             case 'vip1':
                 // 月费以上（含黄金/高级/钻石）即解锁
                 return self::is_member_at_least('monthly');
 
             case 'payshow':
-                // 会员月费以上 或 该文章商城付费墙已解锁
+                // 会员月费以上 或 该文章付费墙已解锁
                 if (self::is_member_at_least('monthly')) {
                     return true;
                 }
                 return self::is_post_paywall_unlocked();
-
-            case 'reply':
-                return self::user_has_approved_comment();
-
-            default:
-                return false;
         }
+        return $can_view;
+    }
+
+    /**
+     * Pro 类型的锁定卡（复用 Free 的卡片结构与样式类）。
+     *
+     * @param string $html Free 的默认输出（空）。
+     * @param string $type 类型键。
+     */
+    public function render_cta_html($html, $type)
+    {
+        $info   = isset(self::$types[$type]) ? self::$types[$type] : null;
+        if (!$info) {
+            return $html;
+        }
+        $type_esc = esc_attr($type);
+
+        $account_url = at8_mlucp_get_account_url();
+        $login_url   = at8_mlucp_get_login_url(get_permalink());
+
+        if ('vip1' === $type) {
+            $action = sprintf(
+                '<a class="at8-mluc-hc-btn" href="%s">%s</a>',
+                esc_url(add_query_arg('tab', 'membership', $account_url)),
+                esc_html__('Upgrade Membership', 'at8-moonlight-user-center-pro')
+            );
+            $tip = esc_html__('This content is for Monthly members and above.', 'at8-moonlight-user-center-pro');
+        } else {
+            // payshow：当前文章开了付费墙则跳文章触发解锁，否则跳会员购买
+            $target = add_query_arg('tab', 'membership', $account_url);
+            if (is_singular() && class_exists('AT8_MLUCP_Paywall') && AT8_MLUCP_Paywall::is_paywalled((int) get_queried_object_id())) {
+                $target = get_permalink((int) get_queried_object_id());
+            } elseif (!is_user_logged_in()) {
+                $target = $login_url;
+            }
+            $action = sprintf(
+                '<a class="at8-mluc-hc-btn" href="%s">%s</a>',
+                esc_url($target),
+                esc_html__('Buy Now', 'at8-moonlight-user-center-pro')
+            );
+            $tip = esc_html__('Purchase to view the content below.', 'at8-moonlight-user-center-pro');
+        }
+
+        // 标题走 Free 的 label 过滤器（键与 Free 内置类型同前缀，后台可统一覆盖）。
+        $title = at8_mluc_ui_label(
+            'hc_title_' . $type,
+            isset($info['cta']) ? $info['cta'] : 'Locked Content'
+        );
+
+        return sprintf(
+            '<div class="at8-mluc-hidecontent at8-mluc-hc-%1$s" data-type="%1$s">'
+                . '<div class="at8-mluc-hc-inner">'
+                . '<span class="at8-mluc-hc-icon" aria-hidden="true">%2$s</span>'
+                . '<div class="at8-mluc-hc-text">'
+                . '<div class="at8-mluc-hc-title">%3$s</div>'
+                . '<div class="at8-mluc-hc-tip">%4$s</div>'
+                . '</div>'
+                . '<div class="at8-mluc-hc-action">%5$s</div>'
+                . '</div></div>',
+            $type_esc,
+            esc_html($info['icon']),
+            esc_html($title),
+            $tip,
+            $action
+        );
     }
 
     /** 当前用户等级是否 >= $key（按 sort_order 比较）。 */
@@ -148,44 +164,6 @@ class AT8_MLUCP_Hidecontent
         return $cur_order >= $min_order;
     }
 
-    /** 当前文章作者。 */
-    private static function is_current_post_author()
-    {
-        if (!is_singular() || !is_user_logged_in()) {
-            return false;
-        }
-        $post_id = (int) get_queried_object_id();
-        if (!$post_id) {
-            return false;
-        }
-        $post = get_post($post_id);
-        return $post && (int) $post->post_author === (int) get_current_user_id();
-    }
-
-    /** 当前用户是否在当前文章有已通过的评论。 */
-    private static function user_has_approved_comment()
-    {
-        if (!is_user_logged_in() || !is_singular()) {
-            return false;
-        }
-        $post_id = (int) get_queried_object_id();
-        if (!$post_id) {
-            return false;
-        }
-        $user = wp_get_current_user();
-        $email = (string) $user->user_email;
-        if ($email === '') {
-            return false;
-        }
-        $q = new WP_Comment_Query(array(
-            'post_id'      => $post_id,
-            'status'       => 'approve',
-            'author_email' => $email,
-            'count'        => true,
-        ));
-        return ((int) $q->get_found_posts()) > 0;
-    }
-
     /** 当前文章（若有）Pro 付费墙是否已为当前用户解锁。 */
     private static function is_post_paywall_unlocked()
     {
@@ -201,94 +179,5 @@ class AT8_MLUCP_Hidecontent
             return false;
         }
         return AT8_MLUCP_Paywall::is_unlocked($post_id);
-    }
-
-    /**
-     * 渲染锁定 CTA 卡片。
-     */
-    private static function render_cta($type)
-    {
-        $info   = self::$types[$type];
-        $type_esc = esc_attr($type);
-        // 锁定卡标题：走 at8_mlucp_ui_label（英文默认 + 后台可自定义）。
-        // $info['label'] 的中文仅用于后台编辑器下拉，不输出到前台。
-        $hc_titles = array(
-            'reply'   => 'Comment to View',
-            'logged'  => 'Log in to View',
-            'vip1'    => 'Members Only',
-            'payshow' => 'Purchase to View',
-        );
-        $title = at8_mlucp_ui_label(
-            'hc_title_' . $type,
-            isset($hc_titles[$type]) ? $hc_titles[$type] : 'Locked Content'
-        );
-        $icon   = esc_html($info['icon']);
-
-        $login_url    = at8_mlucp_get_login_url(get_permalink());
-        $account_url  = at8_mlucp_get_account_url();
-
-        // 不同类型给不同的 CTA 链接 & 提示文案
-        switch ($type) {
-            case 'logged':
-                $action = sprintf(
-                    '<a class="at8-mlucp-hc-btn" href="%s">%s</a>',
-                    esc_url($login_url),
-                    esc_html__('Log In', 'at8-moonlight-user-center-pro')
-                );
-                $tip = esc_html__('Log in to view the content below.', 'at8-moonlight-user-center-pro');
-                break;
-            case 'vip1':
-                $action = sprintf(
-                    '<a class="at8-mlucp-hc-btn" href="%s">%s</a>',
-                    esc_url(add_query_arg('tab', 'membership', $account_url)),
-                    esc_html__('Upgrade Membership', 'at8-moonlight-user-center-pro')
-                );
-                $tip = esc_html__('This content is for Monthly members and above.', 'at8-moonlight-user-center-pro');
-                break;
-        case 'payshow':
-            // 若当前文章启用了付费墙，跳到该文章触发解锁；否则跳会员购买
-            $target = add_query_arg('tab', 'membership', $account_url);
-            if (is_singular() && class_exists('AT8_MLUCP_Paywall') && AT8_MLUCP_Paywall::is_paywalled((int) get_queried_object_id())) {
-                $target = get_permalink((int) get_queried_object_id());
-            } elseif (!is_user_logged_in()) {
-                $target = $login_url;
-            }
-                $action = sprintf(
-                    '<a class="at8-mlucp-hc-btn" href="%s">%s</a>',
-                    esc_url($target),
-                    esc_html__('Buy Now', 'at8-moonlight-user-center-pro')
-                );
-                $tip = esc_html__('Purchase to view the content below.', 'at8-moonlight-user-center-pro');
-                break;
-            case 'reply':
-                $action = sprintf(
-                    '<a class="at8-mlucp-hc-btn" href="%s#respond">%s</a>',
-                    esc_url(is_singular() ? get_permalink() : home_url('/')),
-                    esc_html__('Post a Comment', 'at8-moonlight-user-center-pro')
-                );
-                $tip = esc_html__('Your comment must be approved before the content is revealed.', 'at8-moonlight-user-center-pro');
-                break;
-            default:
-                $action = '';
-                $tip = '';
-        }
-
-        return sprintf(
-            '<div class="at8-mlucp-hidecontent at8-mlucp-hc-%s" data-type="%s">'
-                . '<div class="at8-mlucp-hc-inner">'
-                . '<span class="at8-mlucp-hc-icon" aria-hidden="true">%s</span>'
-                . '<div class="at8-mlucp-hc-text">'
-                . '<div class="at8-mlucp-hc-title">%s</div>'
-                . '<div class="at8-mlucp-hc-tip">%s</div>'
-                . '</div>'
-                . '<div class="at8-mlucp-hc-action">%s</div>'
-                . '</div></div>',
-            $type_esc,
-            $type_esc,
-            $icon,
-            esc_html($title),
-            $tip,
-            $action
-        );
     }
 }

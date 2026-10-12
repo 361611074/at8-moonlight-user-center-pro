@@ -3,7 +3,7 @@ Contributors: 361611074
 Tags: membership, paywall, payments, user center
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -32,7 +32,7 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 **Content control**
 
 * Paywall: sell access to individual posts and pages, with one-off unlock and optional expiry
-* `[hidecontent]` shortcode: reveal content after login, after an approved comment, at a membership level, or after purchase
+* Membership and purchase gates for the free plugin's `[at8_mluc_hide]` shortcode (login and comment gates ship with the free plugin)
 * Demo video library and downloadable materials, both gated by membership level
 
 **Social login**
@@ -58,6 +58,11 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 4. Configure levels and gateways under User Center → Pro Settings.
 
 == Changelog ==
+
+= 1.2.0 =
+* Free/Pro feature split rebalanced: social login, Elementor widgets, the login/comment hidden-content gates and the editor button moved into the free plugin (2.1.0). Pro now focuses purely on monetisation: membership, payments and purchase gates.
+* Hidden content is one shortcode: `[at8_mluc_hide]` handles every type, with Pro adding membership/purchase gates through the free plugin's extension points. The legacy `[at8_mlucp_hide]` name keeps working.
+* The OAuth credentials settings block moved to the free plugin's settings screen.
 
 = 1.1.0 =
 * Licensing moved to the embedded AT8 License SDK talking to the AT8 license center: activation, domain binding, daily re-checks, grace periods and license-gated updates.

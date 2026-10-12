@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AT8 Moonlight User Center Pro 1.1.0\n"
+"Project-Id-Version: AT8 Moonlight User Center Pro 1.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/at8-moonlight-user-center-pro\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-12T11:27:44+00:00\n"
+"POT-Creation-Date: 2026-10-12T12:31:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: at8-moonlight-user-center-pro\n"
@@ -27,12 +27,11 @@ msgstr ""
 
 #. Description of the plugin
 #: at8-moonlight-user-center-pro.php
-msgid "Commercial add-on for AT8 Moonlight User Center: membership levels, paywall, hidden content, membership payments (bank transfer, PayPal, Stripe), demo videos, downloadable materials, purchases, social login and Elementor widgets. Requires the free plugin to be active."
+msgid "Commercial add-on for AT8 Moonlight User Center: membership levels, paywall, membership payments (bank transfer, PayPal, Stripe), demo videos, downloadable materials and purchases. Social login, hidden content basics and Elementor widgets live in the free plugin. Requires the free plugin to be active."
 msgstr ""
 
 #. Author of the plugin
 #: at8-moonlight-user-center-pro.php
-#: includes/class-elementor.php:42
 msgid "漫步白月光"
 msgstr ""
 
@@ -40,72 +39,36 @@ msgstr ""
 msgid "AT8 Moonlight User Center Pro requires the free plugin AT8 Moonlight User Center to be installed and active."
 msgstr ""
 
-#: includes/class-assets.php:101
+#: includes/class-assets.php:100
 msgid "Operation failed."
 msgstr ""
 
-#: includes/class-assets.php:102
+#: includes/class-assets.php:101
 msgid "Processing…"
 msgstr ""
 
-#: includes/class-assets.php:204
+#: includes/class-assets.php:203
 msgid "Hidden Content"
 msgstr ""
 
-#: includes/class-assets.php:205
+#: includes/class-assets.php:204
 msgid "Choose a visibility rule…"
 msgstr ""
 
-#: includes/class-elementor-widgets.php:32
-msgid "内容"
-msgstr ""
-
-#: includes/class-elementor-widgets.php:35
-msgid "该组件直接渲染对应前端表单，样式由主题配合。"
-msgstr ""
-
-#: includes/class-elementor-widgets.php:55
-msgid "漫步白月光 · 登录表单"
-msgstr ""
-
-#: includes/class-elementor-widgets.php:73
-msgid "漫步白月光 · 注册表单"
-msgstr ""
-
-#: includes/class-elementor-widgets.php:91
-msgid "漫步白月光 · 用户资料卡"
-msgstr ""
-
-#: includes/class-hidecontent.php:236
-msgid "Log In"
-msgstr ""
-
-#: includes/class-hidecontent.php:238
-msgid "Log in to view the content below."
-msgstr ""
-
-#: includes/class-hidecontent.php:244
+#: includes/class-hidecontent.php:96
 msgid "Upgrade Membership"
 msgstr ""
 
-#: includes/class-hidecontent.php:246
+#: includes/class-hidecontent.php:98
 msgid "This content is for Monthly members and above."
 msgstr ""
 
-#: includes/class-hidecontent.php:259
+#: includes/class-hidecontent.php:110
 msgid "Buy Now"
 msgstr ""
 
-#: includes/class-hidecontent.php:261
+#: includes/class-hidecontent.php:112
 msgid "Purchase to view the content below."
-msgstr ""
-
-#: includes/class-hidecontent.php:267
-msgid "Post a Comment"
-msgstr ""
-
-#: includes/class-hidecontent.php:269
-msgid "Your comment must be approved before the content is revealed."
 msgstr ""
 
 #: includes/class-license.php:61
@@ -121,7 +84,7 @@ msgid "Keys issued before this version are no longer valid. Please get a new lic
 msgstr ""
 
 #: includes/class-license.php:97
-#: includes/class-settings.php:499
+#: includes/class-settings.php:435
 msgid "Manage license"
 msgstr ""
 
@@ -269,140 +232,6 @@ msgstr ""
 
 #: includes/class-membership.php:382
 msgid "勾选「永不过期」时忽略日期；不勾选则到期时间为该日 23:59（站点时区）。"
-msgstr ""
-
-#: includes/class-oauth.php:42
-msgid "微信"
-msgstr ""
-
-#: includes/class-oauth.php:53
-msgid "QQ"
-msgstr ""
-
-#: includes/class-oauth.php:64
-msgid "GitHub"
-msgstr ""
-
-#: includes/class-oauth.php:75
-msgid "Google"
-msgstr ""
-
-#: includes/class-oauth.php:87
-msgid "Apple"
-msgstr ""
-
-#: includes/class-oauth.php:233
-msgid "或使用第三方账号登录"
-msgstr ""
-
-#. translators: %s: social network name (WeChat, QQ, Weibo, ...).
-#: includes/class-oauth.php:239
-#, php-format
-msgid "使用 %s 登录"
-msgstr ""
-
-#: includes/class-oauth.php:272
-msgid "不支持的登录方式。"
-msgstr ""
-
-#: includes/class-oauth.php:278
-msgid "已取消授权，请重试或使用其他方式登录。"
-msgstr ""
-
-#: includes/class-oauth.php:287
-msgid "安全校验失败（state 无效），请重试。"
-msgstr ""
-
-#: includes/class-oauth.php:294
-msgid "安全校验失败（state 不匹配），请重试。"
-msgstr ""
-
-#: includes/class-oauth.php:300
-msgid "安全校验失败（登录身份不一致），请重试。"
-msgstr ""
-
-#: includes/class-oauth.php:363
-msgid "换取令牌失败。"
-msgstr ""
-
-#: includes/class-oauth.php:381
-msgid "获取微信 openid 失败。"
-msgstr ""
-
-#: includes/class-oauth.php:400
-msgid "获取 QQ openid 失败。"
-msgstr ""
-
-#: includes/class-oauth.php:460
-msgid "获取 Apple 用户信息失败。"
-msgstr ""
-
-#: includes/class-oauth.php:467
-msgid "解析 Apple 身份失败。"
-msgstr ""
-
-#: includes/class-oauth.php:475
-msgid "Apple 用户"
-msgstr ""
-
-#: includes/class-oauth.php:480
-msgid "暂不支持该登录方式。"
-msgstr ""
-
-#: includes/class-oauth.php:484
-msgid "未能获取第三方用户标识。"
-msgstr ""
-
-#: includes/class-oauth.php:523
-msgid "站点已关闭注册，且未找到匹配的账号。"
-msgstr ""
-
-#: includes/class-oauth.php:580
-msgid "第三方返回数据解析失败。"
-msgstr ""
-
-#: includes/class-oauth.php:593
-msgid "Apple 令牌格式错误。"
-msgstr ""
-
-#: includes/class-oauth.php:598
-msgid "Apple 令牌算法不支持。"
-msgstr ""
-
-#: includes/class-oauth.php:602
-msgid "无法获取 Apple 公钥。"
-msgstr ""
-
-#: includes/class-oauth.php:612
-msgid "Apple 公钥不匹配。"
-msgstr ""
-
-#: includes/class-oauth.php:616
-msgid "构建 Apple 公钥失败。"
-msgstr ""
-
-#: includes/class-oauth.php:620
-msgid "加载 Apple 公钥失败。"
-msgstr ""
-
-#: includes/class-oauth.php:627
-msgid "Apple 令牌签名校验失败。"
-msgstr ""
-
-#: includes/class-oauth.php:631
-msgid "Apple 令牌解析失败。"
-msgstr ""
-
-#: includes/class-oauth.php:635
-msgid "Apple 令牌受众不符。"
-msgstr ""
-
-#: includes/class-oauth.php:638
-msgid "Apple 令牌签发方不符。"
-msgstr ""
-
-#: includes/class-oauth.php:641
-msgid "Apple 令牌已过期。"
 msgstr ""
 
 #: includes/class-payments.php:105
@@ -643,7 +472,7 @@ msgid "You have no purchases yet."
 msgstr ""
 
 #: includes/class-settings.php:73
-#: includes/class-settings.php:504
+#: includes/class-settings.php:440
 msgid "User Center Pro Settings"
 msgstr ""
 
@@ -686,181 +515,151 @@ msgstr ""
 msgid "Auto-close timeout"
 msgstr ""
 
-#: includes/class-settings.php:179
-msgid "Social Login"
-msgstr ""
-
-#: includes/class-settings.php:185
-msgid "OAuth credentials"
-msgstr ""
-
-#: includes/class-settings.php:219
+#: includes/class-settings.php:205
 msgid "The membership module is not loaded."
 msgstr ""
 
-#: includes/class-settings.php:237
+#: includes/class-settings.php:223
 msgid "Enable the free base level"
 msgstr ""
 
-#: includes/class-settings.php:241
+#: includes/class-settings.php:227
 msgid "When off, only paid levels remain: visitors without a membership hold no level at all. Content marked \"free\" stays visible to everyone either way."
 msgstr ""
 
-#: includes/class-settings.php:244
+#: includes/class-settings.php:230
 msgid "Add, edit or remove levels here. Deleting a level downgrades everyone who held it; deleting the free level is the same as switching the base level off above. Price and validity drive the purchase flow."
 msgstr ""
 
-#: includes/class-settings.php:249
+#: includes/class-settings.php:235
 msgid "Key"
 msgstr ""
 
-#: includes/class-settings.php:250
-#: includes/class-settings.php:304
+#: includes/class-settings.php:236
+#: includes/class-settings.php:290
 msgid "Label"
 msgstr ""
 
-#: includes/class-settings.php:251
+#: includes/class-settings.php:237
 msgid "Price"
 msgstr ""
 
-#: includes/class-settings.php:252
+#: includes/class-settings.php:238
 msgid "Validity (days)"
 msgstr ""
 
-#: includes/class-settings.php:253
+#: includes/class-settings.php:239
 msgid "Colour"
 msgstr ""
 
-#: includes/class-settings.php:254
+#: includes/class-settings.php:240
 msgid "Sort"
 msgstr ""
 
-#: includes/class-settings.php:255
+#: includes/class-settings.php:241
 msgid "Action"
 msgstr ""
 
-#: includes/class-settings.php:272
+#: includes/class-settings.php:258
 msgid "base"
 msgstr ""
 
-#: includes/class-settings.php:284
+#: includes/class-settings.php:270
 msgid "forever"
 msgstr ""
 
-#: includes/class-settings.php:292
-#: includes/class-settings.php:309
+#: includes/class-settings.php:278
+#: includes/class-settings.php:295
 msgid "Delete"
 msgstr ""
 
-#: includes/class-settings.php:293
+#: includes/class-settings.php:279
 msgid "deleting the base level disables it"
 msgstr ""
 
-#: includes/class-settings.php:299
+#: includes/class-settings.php:285
 msgid "+ Add level"
 msgstr ""
 
-#: includes/class-settings.php:328
+#: includes/class-settings.php:314
 msgid "Enable bank transfer (the admin confirms payment manually)"
 msgstr ""
 
-#: includes/class-settings.php:332
+#: includes/class-settings.php:318
 msgid "Currency symbol"
 msgstr ""
 
-#: includes/class-settings.php:336
+#: includes/class-settings.php:322
 msgid "Transfer instructions"
 msgstr ""
 
-#: includes/class-settings.php:338
+#: includes/class-settings.php:324
 msgid "Shown to the buyer after an offline order is created. Leave empty for the built-in default."
 msgstr ""
 
-#: includes/class-settings.php:361
+#: includes/class-settings.php:347
 msgid "Currency code (ISO 4217, shared by both gateways)"
 msgstr ""
 
-#: includes/class-settings.php:363
+#: includes/class-settings.php:349
 msgid "For example USD / HKD / EUR / JPY. Must match the currency of the level prices."
 msgstr ""
 
-#: includes/class-settings.php:369
+#: includes/class-settings.php:355
 msgid "Enable PayPal (Smart Buttons, server-side capture)"
 msgstr ""
 
-#: includes/class-settings.php:373
+#: includes/class-settings.php:359
 msgid "Mode"
 msgstr ""
 
-#: includes/class-settings.php:375
+#: includes/class-settings.php:361
 msgid "Sandbox"
 msgstr ""
 
-#: includes/class-settings.php:376
+#: includes/class-settings.php:362
 msgid "Live"
 msgstr ""
 
-#: includes/class-settings.php:380
+#: includes/class-settings.php:366
 msgid "Client ID"
 msgstr ""
 
-#: includes/class-settings.php:384
+#: includes/class-settings.php:370
 msgid "Secret"
 msgstr ""
 
-#: includes/class-settings.php:391
+#: includes/class-settings.php:377
 msgid "Enable Stripe (hosted Checkout, cards / Apple Pay / Google Pay)"
 msgstr ""
 
-#: includes/class-settings.php:395
+#: includes/class-settings.php:381
 msgid "Publishable Key"
 msgstr ""
 
-#: includes/class-settings.php:399
+#: includes/class-settings.php:385
 msgid "Secret Key"
 msgstr ""
 
-#: includes/class-settings.php:403
+#: includes/class-settings.php:389
 msgid "Webhook signing secret (optional, fallback fulfilment)"
 msgstr ""
 
 #. translators: %s: webhook endpoint URL
-#: includes/class-settings.php:410
+#: includes/class-settings.php:396
 #, php-format
 msgid "For webhook fallback, add the endpoint %s in the Stripe dashboard, subscribe to checkout.session.completed and paste the signing secret above."
 msgstr ""
 
-#: includes/class-settings.php:427
+#: includes/class-settings.php:413
 msgid "Close pending orders older than (hours)"
 msgstr ""
 
-#: includes/class-settings.php:429
+#: includes/class-settings.php:415
 msgid "0 disables auto-closing. Never set this below 24 hours: an in-flight Stripe Checkout session can last that long."
 msgstr ""
 
-#: includes/class-settings.php:441
-msgid "The social login module is not loaded."
-msgstr ""
-
-#. translators: %s: example callback URL
-#: includes/class-settings.php:453
-#, php-format
-msgid "Register the callback URL (example: %s) on the provider platform. Only providers with both a client ID and a secret appear as front-end login buttons."
-msgstr ""
-
-#: includes/class-settings.php:461
-msgid "Provider"
-msgstr ""
-
-#: includes/class-settings.php:462
-msgid "Client ID / App ID"
-msgstr ""
-
-#: includes/class-settings.php:463
-msgid "Client Secret"
-msgstr ""
-
-#: includes/class-settings.php:497
+#: includes/class-settings.php:433
 msgid "Pro features are inactive because no valid license is active."
 msgstr ""
 

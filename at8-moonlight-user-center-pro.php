@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       AT8 Moonlight User Center Pro
  * Plugin URI:        https://www.at8.fun/
- * Description:       Commercial add-on for AT8 Moonlight User Center: membership levels, paywall, hidden content, membership payments (bank transfer, PayPal, Stripe), demo videos, downloadable materials, purchases, social login and Elementor widgets. Requires the free plugin to be active.
- * Version:          1.1.0
+ * Description:       Commercial add-on for AT8 Moonlight User Center: membership levels, paywall, membership payments (bank transfer, PayPal, Stripe), demo videos, downloadable materials and purchases. Social login, hidden content basics and Elementor widgets live in the free plugin. Requires the free plugin to be active.
+ * Version:          1.2.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            漫步白月光
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * __DIR__ (never to a shared constant), so a constant defined elsewhere can
  * never redirect this plugin's class loading.
  */
-define( 'AT8_MLUCP_VERSION', '1.1.0' );
+define( 'AT8_MLUCP_VERSION', '1.2.0' );
 define( 'AT8_MLUCP_PLUGIN_FILE', __FILE__ );
 define( 'AT8_MLUCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AT8_MLUCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -76,7 +76,7 @@ spl_autoload_register( 'at8_mlucp_autoload' );
  * - Free missing: an admin notice explains the requirement; nothing else runs
  *   and no fatal error is possible.
  * - License invalid: only the license screen and the settings screen load.
- *   Membership, paywall, payments, OAuth, … stay completely dormant.
+ *   Membership, paywall, payments, … stay completely dormant.
  * - License valid: every commercial module boots and flips the free plugin's
  *   `at8_mluc_is_pro` bridge filter.
  *
@@ -151,12 +151,7 @@ function at8_mlucp_bootstrap() {
 	AT8_MLUCP_Hidecontent::get_instance();
 	AT8_MLUCP_Video::get_instance();
 	AT8_MLUCP_Material::get_instance();
-	AT8_MLUCP_OAuth::get_instance();
 	AT8_MLUCP_Editor_Button::get_instance();
-
-	if ( did_action( 'elementor/loaded' ) ) {
-		AT8_MLUCP_Elementor::get_instance();
-	}
 
 	add_filter(
 		'at8_mluc_is_pro',

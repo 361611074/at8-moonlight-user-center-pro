@@ -169,24 +169,10 @@ class AT8_MLUCP_Settings {
 		add_settings_field(
 			'at8_mlucp_order_autoclose',
 			__( 'Auto-close timeout', 'at8-moonlight-user-center-pro' ),
-			array( $this, 'render_orders_field' ),
-			self::PAGE,
-			'at8_mlucp_orders'
-		);
-
-		add_settings_section(
-			'at8_mlucp_oauth',
-			__( 'Social Login', 'at8-moonlight-user-center-pro' ),
-			'__return_false',
-			self::PAGE
-		);
-		add_settings_field(
-			'at8_mlucp_oauth',
-			__( 'OAuth credentials', 'at8-moonlight-user-center-pro' ),
-			array( $this, 'render_oauth_field' ),
-			self::PAGE,
-			'at8_mlucp_oauth'
-		);
+		array( $this, 'render_orders_field' ),
+		self::PAGE,
+		'at8_mlucp_orders'
+	);
 	}
 
 	/**
@@ -432,56 +418,6 @@ class AT8_MLUCP_Settings {
 	}
 
 	/**
-	 * Render the OAuth credentials table.
-	 *
-	 * @return void
-	 */
-	public function render_oauth_field() {
-		if ( ! class_exists( 'AT8_MLUCP_OAuth' ) ) {
-			echo '<p class="description">' . esc_html__( 'The social login module is not loaded.', 'at8-moonlight-user-center-pro' ) . '</p>';
-			return;
-		}
-
-		$providers = AT8_MLUCP_OAuth::providers();
-		$saved     = at8_mlucp_get_option( 'oauth', array() );
-		$saved     = is_array( $saved ) ? $saved : array();
-		?>
-		<p class="description">
-			<?php
-			printf(
-				/* translators: %s: example callback URL */
-				esc_html__( 'Register the callback URL (example: %s) on the provider platform. Only providers with both a client ID and a secret appear as front-end login buttons.', 'at8-moonlight-user-center-pro' ),
-				'<code>' . esc_html( home_url( '/?at8_mlucp_oauth=wechat' ) ) . '</code>'
-			);
-			?>
-		</p>
-		<table class="at8-mlucp-oauth-table widefat">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Provider', 'at8-moonlight-user-center-pro' ); ?></th>
-					<th><?php esc_html_e( 'Client ID / App ID', 'at8-moonlight-user-center-pro' ); ?></th>
-					<th><?php esc_html_e( 'Client Secret', 'at8-moonlight-user-center-pro' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ( $providers as $id => $provider ) : ?>
-					<?php
-					$credentials = isset( $saved[ $id ] ) && is_array( $saved[ $id ] ) ? $saved[ $id ] : array();
-					$client_id   = isset( $credentials['client_id'] ) ? $credentials['client_id'] : '';
-					$secret      = isset( $credentials['client_secret'] ) ? $credentials['client_secret'] : '';
-					?>
-					<tr>
-						<td><strong><?php echo esc_html( $provider['label'] ); ?></strong></td>
-						<td><input type="text" class="regular-text" name="at8_mlucp_options[oauth][<?php echo esc_attr( $id ); ?>][client_id]" value="<?php echo esc_attr( $client_id ); ?>"></td>
-						<td><input type="password" class="regular-text" name="at8_mlucp_options[oauth][<?php echo esc_attr( $id ); ?>][client_secret]" value="<?php echo esc_attr( $secret ); ?>"></td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
-		<?php
-	}
-
-	/**
 	 * Render the settings screen.
 	 *
 	 * @return void
@@ -545,27 +481,6 @@ class AT8_MLUCP_Settings {
 		$options['stripe_pk']             = isset( $input['stripe_pk'] ) ? sanitize_text_field( wp_unslash( $input['stripe_pk'] ) ) : '';
 		$options['stripe_sk']             = isset( $input['stripe_sk'] ) ? sanitize_text_field( wp_unslash( $input['stripe_sk'] ) ) : '';
 		$options['stripe_webhook_secret'] = isset( $input['stripe_webhook_secret'] ) ? sanitize_text_field( wp_unslash( $input['stripe_webhook_secret'] ) ) : '';
-
-		$options['oauth'] = array();
-		if ( isset( $input['oauth'] ) && is_array( $input['oauth'] ) ) {
-			foreach ( $input['oauth'] as $provider => $credentials ) {
-				$provider = sanitize_key( $provider );
-
-				if ( '' === $provider || ! is_array( $credentials ) ) {
-					continue;
-				}
-
-				$client_id = isset( $credentials['client_id'] ) ? sanitize_text_field( wp_unslash( $credentials['client_id'] ) ) : '';
-				$secret    = isset( $credentials['client_secret'] ) ? sanitize_text_field( wp_unslash( $credentials['client_secret'] ) ) : '';
-
-				if ( '' !== $client_id || '' !== $secret ) {
-					$options['oauth'][ $provider ] = array(
-						'client_id'     => $client_id,
-						'client_secret' => $secret,
-					);
-				}
-			}
-		}
 
 		$options['membership_levels'] = $this->sanitize_levels( isset( $input['membership_levels'] ) ? $input['membership_levels'] : array() );
 

@@ -2,7 +2,7 @@
 
 「AT8 Moonlight User Center」（Free 版）的商业化扩展插件。本仓库即插件根目录，上传后作为**独立插件**在 WordPress 后台启用；需先安装并启用 Free 版。
 
-- 版本：1.1.0
+- 版本：1.2.0
 - 授权：GPL-2.0-or-later
 - 依赖：**必须先安装并启用** AT8 Moonlight User Center（Free 版）2.0.0+
 - 作者：漫步白月光 · https://www.at8.fun/
@@ -14,15 +14,14 @@
 | 会员等级 | 后台动态定义等级（标签/颜色/价格/有效期/排序），到期自动降级；用户资料页可手工设置等级与到期日 |
 | 账户中心会员 Tab | 当前等级 + 等级对照表 + 购买/升级卡（挂在 Free 的 `at8_mluc_account_tabs` 扩展点） |
 | 付费墙 Paywall | 单篇文章/页面付费解锁，一次性购买，可选有效期；含销量统计与 REST 输出过滤 |
-| 隐藏内容 `[hidecontent]` | 登录可见 / 评论可见 / 会员等级可见 / 付费可见 四种短代码 |
+| 隐藏内容扩展 | 会员等级 / 付费 两型门控（登录/评论两型在 Free，统一短码 `[at8_mluc_hide]`） |
 | 支付 | 线下转账（管理员确认收款）+ PayPal（Smart Buttons）+ Stripe（Checkout + Webhook 兜底） |
 | 订单 | CPT `at8_mlucp_order`，pending 超时自动关闭，管理员一键确认收款并开通 |
 | 购买记录 | 账户中心 tab + `[at8_mlucp_purchases]` 短代码 |
 | 演示视频 | CPT `at8_mlucp_demo_video`，按会员等级控制可见性，`[at8_mlucp_videos]` / `[at8_mlucp_video]` 短代码 |
 | 素材下载 | CPT `at8_mlucp_material`，按等级控制，下载限次，`[at8_mlucp_materials]` / `[at8_mlucp_downloads]` 短代码 |
-| 社交登录 | QQ / 微信 / 微博 / GitHub / Google / Microsoft / Facebook / Apple，按钮挂在 Free 登录/注册表单底部 |
-| Elementor | 登录 / 注册 / 个人资料三个小工具 |
-| 编辑器按钮 | 文章编辑器「隐藏内容」下拉，快速插入四种 hidecontent 短代码 |
+| （已下沉 Free） | 社交登录、Elementor 小工具、登录/评论隐藏内容、编辑器按钮自 1.2.0 起移入 Free 2.1.0 |
+| 编辑器按钮（Pro 部分） | 文章编辑器「隐藏内容」下拉的会员/付费两型（登录/评论两型在 Free） |
 
 ## 授权体系（1.1.0 起：AT8 License SDK）
 

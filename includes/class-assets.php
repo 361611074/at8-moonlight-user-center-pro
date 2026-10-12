@@ -29,7 +29,6 @@ class AT8_MLUCP_Assets {
 		'at8_mlucp_video',
 		'at8_mlucp_materials',
 		'at8_mlucp_downloads',
-		'at8_mlucp_oauth_buttons',
 	);
 
 	/**
