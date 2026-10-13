@@ -2,9 +2,9 @@
 
 「AT8 Moonlight User Center」（Free 版）的商业化扩展插件。本仓库即插件根目录，上传后作为**独立插件**在 WordPress 后台启用；需先安装并启用 Free 版。
 
-- 版本：1.3.0
+- 版本：1.4.0
 - 授权：GPL-2.0-or-later
-- 依赖：**必须先安装并启用** AT8 Moonlight User Center（Free 版）2.2.0+
+- 依赖：**必须先安装并启用** AT8 Moonlight User Center（Free 版）2.3.0+
 - 作者：漫步白月光 · https://www.at8.fun/
 
 ## Pro 功能
@@ -21,6 +21,7 @@
 | 素材下载 | CPT `at8_mlucp_material`，按等级控制，下载限次，`[at8_mlucp_materials]` / `[at8_mlucp_downloads]` 短代码 |
 | 编辑器按钮（Pro 部分） | 文章编辑器「隐藏内容」下拉的会员/付费两型（登录/评论两型在 Free） |
 | （已下沉 Free） | 会员等级系统、订单引擎、线下转账、社交登录、Elementor 小工具、登录/评论隐藏内容自 1.3.0 起全部移入 Free 2.2.0 |
+| 旧链接兜底 | 已废弃的 `at8-mlucp-settings`（≤1.2.0 的 Pro 设置页）重定向到 Free 设置屏，挂在 `admin_page_access_denied`（core 渲染 403 前唯一可用的钩子） |
 
 ## 授权体系（1.1.0 起：AT8 License SDK）
 
@@ -39,11 +40,12 @@
 
 ## 与 Free 的边界
 
-- Pro 只通过 Free 的公开钩子交互：`at8_mluc_account_tabs`（挂 tab）、`at8_mluc_is_pro`（授权总开关）、`at8_mluc_register_settings` / `at8_mluc_settings_extra_fields`（在 Free 设置屏上渲染自己的分区）、`at8_mluc_payment_gateways` / `at8_mluc_payment_order_response`（在线网关）、`at8_mluc_complete_paywall_order`（付费墙交货）、`at8_mluc_membership_level_limit`（等级上限 3 → 8）。
+- Pro 只通过 Free 的公开钩子交互：`at8_mluc_account_tabs`（挂 tab）、`at8_mluc_is_pro`（授权总开关）、`at8_mluc_admin_menu`（**推荐的后台菜单挂载点**，保证 `add_submenu_page()` 算出正确的 page hook）、`at8_mluc_register_settings` / `at8_mluc_settings_extra_fields`（在 Free 设置屏上渲染自己的分区）、`at8_mluc_payment_gateways` / `at8_mluc_payment_order_response`（在线网关）、`at8_mluc_complete_paywall_order`（付费墙交货）、`at8_mluc_membership_level_limit`（等级上限 3 → 8）、`at8_mluc_limit_avatar_count`（头像 12 → 无限）、`at8_mluc_limit_gateway_count`（网关 1 → 3）、`at8_mluc_upgrade_features` / `at8_mluc_shortcode_reference`（校正 Free 设置屏上的对比表与短码速查）。
 - Free 缺失时 Pro 只弹后台提示，不产生致命错误；授权失效时仅保留 License 页面，商业模块完全休眠。
 - 类前缀 `AT8_MLUCP_`、函数前缀 `at8_mlucp_`、选项 `at8_mlucp_options`、自有 CPT `at8_mlucp_*`、文本域 `at8-moonlight-user-center-pro`，与 Free 完全隔离，可独立启停。
 - 会员数据（`at8_mluc_membership_level` / `at8_mluc_membership_expires`）与订单（CPT `at8_mluc_order`）归 Free 所有，Pro 停用不丢数据。
 - 纵深防御：网关注册与订单响应在钩子层再次校验授权，仅有配置也不收款。
+- 后台菜单顺序（1.3.1）：Authorization SDK 与第三方插件想把子菜单挂到「用户中心」下时，务必在 Free 的 `add_menu_page()` **之后**执行——用 Free 提供的 `at8_mluc_admin_menu`，或至少在 `admin_menu` 晚于优先级 5 的位置。挂早了会出现「菜单里有链接、点进去 403」。详见 Free 2.2.1 的变更说明。
 - SDK 类前缀 `AT8SDK_` / `AT8_License_SDK`，自带 class_exists 守卫，多个 AT8 产品可并存。
 - Free 未授权、未安装的任何情况下都完整可用（登录、注册、账户中心、头像、菜单、会员销售）。
 

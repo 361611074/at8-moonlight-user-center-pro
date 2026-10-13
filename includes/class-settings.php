@@ -50,7 +50,43 @@ class AT8_MLUCP_Settings {
 	 */
 	private function __construct() {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		/*
+		 * `admin_page_access_denied` (fired from wp-admin/includes/menu.php)
+		 * is the only hook that runs before WordPress renders its 403 for an
+		 * unregistered admin page; admin_init is too late, because core
+		 * decides already while building the menu.
+		 */
+		add_action( 'admin_page_access_denied', array( $this, 'maybe_redirect_legacy_page' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( AT8_MLUCP_PLUGIN_FILE ), array( $this, 'add_action_link' ) );
+	}
+
+	/**
+	 * Redirect the retired 1.2.x settings slug to the shared screen.
+	 *
+	 * Up to 1.2.0 Pro owned `at8-mlucp-settings`. That page moved into the
+	 * free plugin's settings screen in 1.3.0, so bookmarks, e-mailed links
+	 * and the action link cached by other code would otherwise land on a
+	 * WordPress 403 "you are not allowed to access this page" screen.
+	 *
+	 * @return void
+	 */
+	public function maybe_redirect_legacy_page() {
+		global $pagenow, $plugin_page;
+
+		if ( 'admin.php' !== $pagenow || ! isset( $plugin_page ) ) {
+			return;
+		}
+
+		if ( 'at8-mlucp-settings' !== sanitize_key( (string) $plugin_page ) || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( ! class_exists( 'AT8_MLUC_Settings' ) ) {
+			return;
+		}
+
+		wp_safe_redirect( add_query_arg( 'page', AT8_MLUC_Settings::PAGE, admin_url( 'admin.php' ) ) );
+		exit;
 	}
 
 	/**

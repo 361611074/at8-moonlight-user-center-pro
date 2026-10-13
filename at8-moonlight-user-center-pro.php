@@ -3,7 +3,7 @@
  * Plugin Name:       AT8 Moonlight User Center Pro
  * Plugin URI:        https://www.at8.fun/
  * Description:       Commercial add-on for AT8 Moonlight User Center: online payments (PayPal, Stripe), paywall, demo videos, downloadable materials, purchases and a raised membership level cap. The user center core, social login, hidden content basics, offline payments and Elementor widgets live in the free plugin. Requires the free plugin to be active.
- * Version:          1.3.0
+ * Version:          1.4.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            漫步白月光
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * __DIR__ (never to a shared constant), so a constant defined elsewhere can
  * never redirect this plugin's class loading.
  */
-define( 'AT8_MLUCP_VERSION', '1.3.0' );
+define( 'AT8_MLUCP_VERSION', '1.4.0' );
 define( 'AT8_MLUCP_PLUGIN_FILE', __FILE__ );
 define( 'AT8_MLUCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AT8_MLUCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -162,12 +162,104 @@ function at8_mlucp_bootstrap() {
 	);
 
 	add_filter(
-		'at8_mluc_is_pro',
+		'at8_mluc_membership_level_limit',
 		function () {
-			return AT8_MLUCP_License::is_active();
+			return 8;
 		}
 	);
-}add_action( 'plugins_loaded', 'at8_mlucp_bootstrap', 6 );
+
+	// Pro lifts the remaining free ceilings: unlimited avatars and the full
+	// gateway set on top of bank transfer.
+	add_filter(
+		'at8_mluc_limit_avatar_count',
+		function () {
+			return AT8_MLUCP_License::is_active() ? 0 : 12;
+		}
+	);
+
+	add_filter(
+		'at8_mluc_limit_gateway_count',
+		function () {
+			return AT8_MLUCP_License::is_active() ? 3 : 1;
+		}
+	);
+
+	add_filter( 'at8_mluc_is_pro', 'at8_mlucp_is_pro' );
+
+	// Document Pro-only shortcodes in the shared cheat sheet.
+	add_filter( 'at8_mluc_shortcode_reference', 'at8_mlucp_shortcode_reference' );
+
+	// Keep the upgrade table honest once the licence has raised the limits.
+	add_filter( 'at8_mluc_upgrade_features', 'at8_mlucp_upgrade_features' );
+}
+
+/**
+ * Report whether a valid Pro licence is active.
+ *
+ * @return bool
+ */
+function at8_mlucp_is_pro() {
+	return AT8_MLUCP_License::is_active();
+}
+
+/**
+ * Append the Pro shortcodes to the reference list.
+ *
+ * @param array<int, array<string, string>> $rows Existing rows.
+ * @return array<int, array<string, string>>
+ */
+function at8_mlucp_shortcode_reference( $rows ) {
+	$rows   = is_array( $rows ) ? $rows : array();
+	$domain = 'at8-moonlight-user-center-pro';
+
+	$rows[] = array(
+		'code'  => '[at8_mlucp_purchases]',
+		'label' => __( 'Purchase history', $domain ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- intentional: strings belong to the Pro text domain.
+	);
+	$rows[] = array(
+		'code'  => '[at8_mlucp_videos]',
+		'label' => __( 'Demo video library', $domain ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+	);
+	$rows[] = array(
+		'code'  => '[at8_mlucp_materials]',
+		'label' => __( 'Downloadable materials', $domain ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+	);
+	$rows[] = array(
+		'code'  => '[at8_mlucp_hide type="vip1"]',
+		'label' => __( 'Members-only content', $domain ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+	);
+
+	return $rows;
+}
+
+/**
+ * Refresh the "Pro" column with what this installation can really do.
+ *
+ * @param array<string, array<string, string>> $features Comparison rows.
+ * @return array<string, array<string, string>>
+ */
+function at8_mlucp_upgrade_features( $features ) {
+	if ( ! is_array( $features ) ) {
+		return $features;
+	}
+
+	$unlimited = __( 'Unlimited', 'at8-moonlight-user-center-pro' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+
+	if ( isset( $features['membership_levels'] ) ) {
+		$features['membership_levels']['pro'] = sprintf(
+			/* translators: %d: number of membership levels. */
+			__( 'Up to %d', 'at8-moonlight-user-center-pro' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+			8
+		);
+	}
+
+	if ( isset( $features['avatars'] ) ) {
+		$features['avatars']['pro'] = $unlimited;
+	}
+
+	return $features;
+}
+add_action( 'plugins_loaded', 'at8_mlucp_bootstrap', 6 );
 
 register_activation_hook( __FILE__, array( 'AT8_MLUCP_Activator', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'AT8_MLUCP_Activator', 'deactivate' ) );

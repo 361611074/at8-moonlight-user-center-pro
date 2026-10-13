@@ -3,7 +3,7 @@ Contributors: 361611074
 Tags: membership, paywall, payments, user center
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -44,12 +44,23 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 
 == Installation ==
 
-1. Install and activate AT8 Moonlight User Center (free) 2.2.0 or newer.
+1. Install and activate AT8 Moonlight User Center (free) 2.3.0 or newer.
 2. Upload this plugin to `wp-content/plugins/at8-moonlight-user-center-pro/` and activate it.
 3. Open User Center → License (Pro) and enter your license code from the AT8 license center.
 4. Configure the online gateways under User Center → Settings → Online Payment (PayPal / Stripe); membership levels, offline payments and orders live on the same screen.
 
 == Changelog ==
+
+= 1.4.0 =
+* Requires the free plugin 2.3.0. Pro now raises every free ceiling through one boundary API instead of duplicating logic: the membership level cap goes from three to eight, the avatar library becomes unlimited and the payment gateway shelf grows from bank transfer only to bank transfer, PayPal and Stripe.
+* New: Pro contributes its own shortcodes to the free plugin's cheat sheet on the settings screen, so `[at8_mlucp_purchases]`, `[at8_mlucp_videos]`, `[at8_mlucp_materials]` and the level-gated `[at8_mlucp_hide]` are documented where admins already look.
+* New: the shared Pro comparison table now reports what this installation can really do — once the licence is active it shows the raised limits instead of a generic sales column.
+* Fixed: the gateway ceiling declared by the free plugin is now enforced, so a site without a licence can never end up with more gateways than it is entitled to. Bank transfer always survives the cut.
+* Improved: the licence bridge is a plain function and the boot sequence keeps the free plugin's menu construction ahead of Pro's, which is what keeps the License screen reachable.
+
+= 1.3.1 =
+* Fixed: the retired `at8-mlucp-settings` slug (the Pro settings screen that existed up to 1.2.0) now redirects to the free plugin's settings screen instead of hitting WordPress's "Sorry, you are not allowed to access this page" (HTTP 403). The redirect hooks `admin_page_access_denied`, which is the only one that fires before core renders that error.
+* Fixed: with the free plugin 2.2.1 the User Center menu is built before child pages are added, so the License screen no longer 403s when Pro boots earlier than the free plugin.
 
 = 1.3.0 =
 * Architecture: the membership system, the order engine and the offline bank-transfer gateway moved into the free plugin 2.2.0. Pro is now a pure add-on that lifts the level cap from three to eight, contributes the Online Payment and Orders sections to the free plugin's settings screen, and registers the PayPal / Stripe gateways.
