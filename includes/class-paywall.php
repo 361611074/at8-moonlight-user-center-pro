@@ -211,6 +211,7 @@ class AT8_MLUCP_Paywall
 
     /**
      * at8_mluc_paywall_levels：免费阅读等级（多选）+ 核心盒单等级兼容。
+     * 核心 2.5.0 起 META_LEVEL 存数组（多选），旧版存单个字符串。
      */
     public function filter_levels($levels, $post_id)
     {
@@ -219,9 +220,16 @@ class AT8_MLUCP_Paywall
         if (!empty($free)) {
             return $free;
         }
-        $core = (string) get_post_meta($post_id, '_at8_mluc_pw_level', true);
-        if ('' !== $core && !in_array($core, $levels, true)) {
-            $levels[] = $core;
+        $raw = get_post_meta($post_id, '_at8_mluc_pw_level', true);
+        if (is_array($raw)) {
+            $core = array_filter(array_map('sanitize_key', $raw));
+        } else {
+            $core = '' === (string) $raw ? array() : array(sanitize_key((string) $raw));
+        }
+        foreach ($core as $slug) {
+            if (!in_array($slug, $levels, true)) {
+                $levels[] = $slug;
+            }
         }
         return $levels;
     }

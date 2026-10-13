@@ -288,13 +288,13 @@ class AT8_MLUCP_Stripe
         if ($order_id <= 0 || get_post_type($order_id) !== AT8_MLUC_Payments::CPT
             || (int) get_post_meta($order_id, '_at8_mluc_pay_user', true) !== get_current_user_id()
             || 'pending' !== (string) get_post_meta($order_id, '_at8_mluc_pay_status', true)) {
-            at8_mlucp_send_json(false, __('訂單無效或狀態已變更。', 'at8-moonlight-user-center-pro'));
+            at8_mlucp_send_json(false, __('订单无效或状态已变更。', 'at8-moonlight-user-center-pro'));
         }
         $session = self::create_session($order_id);
         if (is_wp_error($session)) {
             at8_mlucp_send_json(false, $session->get_error_message());
         }
         update_post_meta($order_id, '_at8_mluc_pay_txn_ref', $session['id']);
-        at8_mlucp_send_json(true, __('正在跳轉到 Stripe…', 'at8-moonlight-user-center-pro'), array('redirect' => $session['url']));
+        at8_mlucp_send_json(true, __('正在跳转到 Stripe…', 'at8-moonlight-user-center-pro'), array('redirect' => $session['url']));
     }
 }

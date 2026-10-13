@@ -8,7 +8,7 @@ Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Commercial add-on for AT8 Moonlight User Center: membership levels beyond the free cap, paywall, purchase gates, PayPal and Stripe payments, demo videos, downloadable materials and purchases.
+Commercial add-on for AT8 Moonlight User Center: online card payments (PayPal, Stripe), tiered upgrade pricing, paywall resources, purchase and level content gates, demo videos and downloadable materials.
 
 == Description ==
 
@@ -16,7 +16,7 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 
 **Membership**
 
-* Up to eight membership levels, defined in the free plugin's Membership Levels settings section (label, colour, price, validity in days, sort order); the free plugin alone supports three
+* Membership levels are defined in the free plugin's Membership Levels settings section, with no cap on the number of tiers (label, colour, price, validity in days, sort order, point cost)
 * Optional free base level; paid levels expire automatically and downgrade on expiry
 * Membership tab in the account dashboard with a level comparison table and a buy / upgrade card
 * Admin UI on the user profile page to set a level and its expiry
@@ -31,7 +31,7 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 
 **Content control**
 
-* Paywall: sell access to individual posts and pages, with one-off unlock and optional expiry; orders reuse the free plugin's order engine
+* Paywall: sell access to individual posts and pages, with one-off unlock and optional expiry, several free-read levels per post and video / download / gallery resources attached to the post; orders reuse the free plugin's order engine
 * Membership and purchase gates for the free plugin's `[at8_mluc_hide]` shortcode (login and comment gates ship with the free plugin)
 * Demo video library and downloadable materials, both gated by membership level
 
@@ -40,16 +40,20 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 * Activation through the AT8 license center (www.at8.fun): domain binding, site limits and daily re-checks handled by the embedded AT8 License SDK
 * Grace period keeps Pro alive when the license center is unreachable
 * License-gated updates: new Pro packages are offered in the admin only while the license is valid and carries update access
-* Every monetisation feature (gateways, paywall, level cap) stays dormant until a valid license is active; the free plugin keeps working on its own
+* Every Pro module (gateways, tier ladders, paywall resources, content gates, videos, materials) stays dormant until a valid license is active; the free plugin keeps working on its own
 
 == Installation ==
 
-1. Install and activate AT8 Moonlight User Center (free) 2.3.0 or newer.
+1. Install and activate AT8 Moonlight User Center (free) 2.5.0 or newer.
 2. Upload this plugin to `wp-content/plugins/at8-moonlight-user-center-pro/` and activate it.
 3. Open User Center → License (Pro) and enter your license code from the AT8 license center.
 4. Configure the online gateways under User Center → Settings → Online Payment (PayPal / Stripe); membership levels, offline payments and orders live on the same screen.
 
 == Changelog ==
+
+= 1.6.0 =
+* Requires the free plugin 2.5.0. Pro no longer raises any free-plugin ceiling — the free plugin has no artificial caps left — so the `at8_mluc_membership_level_limit`, `at8_mluc_limit_avatar_count` and `at8_mluc_limit_gateway_count` integrations are removed. Pro now contributes only what it actually adds: online gateways, tiered upgrade pricing, paywall resources, level and purchase content gates, videos, materials and the purchases shortcode.
+* Documentation no longer describes "lifting the free cap" as a selling point.
 
 = 1.5.0 =
 * Requires the free plugin 2.4.1. The paywall module no longer ships its own content gate: the free plugin's paywall core is the single gate and the single delivery handler, and Pro extends it through the `at8_mluc_paywall_enabled`, `at8_mluc_paywall_levels`, `at8_mluc_paywall_price`, `at8_mluc_paywall_can_purchase`, `at8_mluc_paywall_unlock_expire`, `at8_mluc_paywall_locked_html` and `at8_mluc_paywall_unlocked_html` filters. A post can therefore never be double-gated and an order can never be claimed twice.

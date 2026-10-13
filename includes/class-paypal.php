@@ -238,8 +238,8 @@ class AT8_MLUCP_PayPal
             at8_mlucp_send_json(false, $done->get_error_message());
         }
         $ok_msg = ('paywall' === (string) get_post_meta($order_id, '_at8_mluc_pay_type', true))
-            ? __('付款成功，內容已解鎖。', 'at8-moonlight-user-center-pro')
-            : __('付款成功，會員等級已開通。', 'at8-moonlight-user-center-pro');
+            ? __('付款成功，内容已解锁。', 'at8-moonlight-user-center-pro')
+            : __('付款成功，会员等级已开通。', 'at8-moonlight-user-center-pro');
         at8_mlucp_send_json(true, $ok_msg, array('reload' => 1));
     }
 
@@ -249,16 +249,16 @@ class AT8_MLUCP_PayPal
     private static function check_order($order_id)
     {
         if ($order_id <= 0 || get_post_type($order_id) !== AT8_MLUC_Payments::CPT) {
-            return new WP_Error('at8_mlucp_bad_order', __('訂單不存在。', 'at8-moonlight-user-center-pro'));
+            return new WP_Error('at8_mlucp_bad_order', __('订单不存在。', 'at8-moonlight-user-center-pro'));
         }
         if ((int) get_post_meta($order_id, '_at8_mluc_pay_user', true) !== get_current_user_id()) {
-            return new WP_Error('at8_mlucp_bad_owner', __('無權操作該訂單。', 'at8-moonlight-user-center-pro'));
+            return new WP_Error('at8_mlucp_bad_owner', __('无权操作该订单。', 'at8-moonlight-user-center-pro'));
         }
         if ('pending' !== (string) get_post_meta($order_id, '_at8_mluc_pay_status', true)) {
-            return new WP_Error('at8_mlucp_bad_status', __('訂單狀態已變更，請刷新頁面。', 'at8-moonlight-user-center-pro'));
+            return new WP_Error('at8_mlucp_bad_status', __('订单状态已变更，请刷新页面。', 'at8-moonlight-user-center-pro'));
         }
         if ('paypal' !== (string) get_post_meta($order_id, '_at8_mluc_pay_gateway', true)) {
-            return new WP_Error('at8_mlucp_bad_gw', __('訂單支付方式不是 PayPal。', 'at8-moonlight-user-center-pro'));
+            return new WP_Error('at8_mlucp_bad_gw', __('订单支付方式不是 PayPal。', 'at8-moonlight-user-center-pro'));
         }
         return true;
     }
