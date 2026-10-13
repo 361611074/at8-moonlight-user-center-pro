@@ -53,6 +53,7 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 
 = 1.5.0 =
 * Requires the free plugin 2.4.1. The paywall module no longer ships its own content gate: the free plugin's paywall core is the single gate and the single delivery handler, and Pro extends it through the `at8_mluc_paywall_enabled`, `at8_mluc_paywall_levels`, `at8_mluc_paywall_price`, `at8_mluc_paywall_can_purchase`, `at8_mluc_paywall_unlock_expire`, `at8_mluc_paywall_locked_html` and `at8_mluc_paywall_unlocked_html` filters. A post can therefore never be double-gated and an order can never be claimed twice.
+* New: the tiered upgrade path. Members moving up pay only the difference between the target level and the level they hold, credited in full; the card renders next to the points and purchase cards in the Membership tab and orders still flow through the core engine.
 * New: free-read levels are now a multi-select. Tick the membership levels that read a post for free; the core gate opens for any of them, on top of the existing per-level member prices.
 * New: Pro takes over the paywall meta box (the free plugin's plain Paywall box steps aside through the `at8_mluc_paywall_meta_box` filter), so one box carries mode, price, member prices, free levels, purchase permission, order expiry and the mode resources.
 * Improved: the locked card and the download / gallery / video blocks are injected through the core's HTML filters, so feeds, REST responses and the teaser behaviour all follow the core.

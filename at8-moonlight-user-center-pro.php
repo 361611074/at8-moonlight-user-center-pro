@@ -168,6 +168,7 @@ function at8_mlucp_bootstrap() {
 	AT8_MLUCP_Gateways::get_instance();
 	AT8_MLUCP_Purchases::get_instance();
 	AT8_MLUCP_Paywall::get_instance();
+	AT8_MLUCP_Upgrade_Tiers::get_instance();
 	AT8_MLUCP_Hidecontent::get_instance();
 	AT8_MLUCP_Video::get_instance();
 	AT8_MLUCP_Material::get_instance();
