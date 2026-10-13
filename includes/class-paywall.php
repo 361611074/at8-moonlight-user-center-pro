@@ -2,13 +2,24 @@
 /**
  * 付费墙（用户中心 Pro）：单篇文章付费解锁（阅读 / 下载 / 图集 / 视频）。
  *
+ * 1.5.0 起本体只是「字段 + 资源」层：闸门、解锁记录与订单交货全部交给免费核心
+ * （AT8_MLUC_Paywall / AT8_MLUC_Payments），Pro 通过核心的过滤器把自有字段映射上去：
+ *   - at8_mluc_paywall_enabled      pay_mode + 总开关 + 管理员豁免
+ *   - at8_mluc_paywall_levels       免费阅读等级（多选，兼容核心盒单等级）
+ *   - at8_mluc_paywall_price        会员等级价（_at8_mlucp_pw_price_{level}）
+ *   - at8_mluc_paywall_can_purchase 购买权限 pay_auth
+ *   - at8_mluc_paywall_unlock_expire 订单时效（小时 / 天 / 个月）
+ *   - at8_mluc_paywall_locked_html  富卡片（模式徽章 / 销量 / 网关 / 内联脚本）
+ *   - at8_mluc_paywall_unlocked_html 解锁后追加资源（下载 / 图集 / 视频）
+ *   - at8_mluc_paywall_unlocked     动作：销量 +1
+ * 核心负责原子认领（pending → paid）与写解锁记录，Pro 不再持有 the_content 过滤器，
+ * 也不会与核心双重闸门 / 双重认领。
+ *
  * 自 moonlight-shop 的付费内容模块移植并独立化：
- *   - Meta Box「付费功能」：模式标签卡 + 通用配置 + 模式专属配置（post / page）。
- *   - 正文拦截：未购买时展示摘要 + 付费墙卡片；已购买追加专属资源（下载 / 图集 / 视频）。
- *   - 解锁记录：user meta `at8_mluc_pay_unlocks`（post_id => 过期时间戳，0=永久）。
- *   - 订单：复用 at8_mluc_order CPT（_at8_mluc_pay_type=paywall，_at8_mluc_pay_post=文章ID），
- *     manual 线下转账 / PayPal / Stripe 全部复用现有网关与 complete_order 流程。
+ *   - Meta Box「付费功能」：模式标签卡 + 通用配置 + 模式专属配置（post / page），
+ *     接管免费核心的 Paywall 盒（at8_mluc_paywall_meta_box = false）。
  *   - 下载端点：?at8_mlucp_pw_dl=TOKEN（transient 令牌，隐藏真实地址，二次校验解锁）。
+ *   - REST API（content.rendered 不走 singular 主循环）：付费内容单独封堵。
  *
  * 不包含 moonlight-shop 的积分 / 优惠码 / 推广折扣体系（商城专属，用户中心无对应模块）。
  *
@@ -52,18 +63,28 @@ class AT8_MLUCP_Paywall
     {
         add_action('add_meta_boxes', array($this, 'register_meta_box'));
         add_action('save_post', array($this, 'save_meta'), 25);
-        // 正文拦截：晚于 hidecontent 的 p5（短代码已消化），与商城版本一致用 p20。
-        add_filter('the_content', array($this, 'filter_content'), 20);
         // REST API（content.rendered 不走 singular 主循环）：付费内容必须单独封堵。
         add_filter('rest_prepare_post', array($this, 'rest_prepare'), 10, 2);
         add_filter('rest_prepare_page', array($this, 'rest_prepare'), 10, 2);
         add_action('wp_ajax_at8_mlucp_pw_unlock', array($this, 'ajax_unlock'));
         add_action('wp_ajax_nopriv_at8_mlucp_pw_unlock', array($this, 'ajax_unlock'));
-        // 订单完成入口：免费插件的 AT8_MLUC_Payments::complete_order 在
-        // paywall 类型订单付款后通过该过滤器交货（原子抢占 + 解锁）。
-        add_filter('at8_mluc_complete_paywall_order', array($this, 'complete_paywall_order'), 10, 3);
         // 付费墙下载端点。
         add_action('template_redirect', array($this, 'handle_download'));
+
+        /*
+         * 免费核心 2.4.1 是唯一的闸门与交货器。这里只做字段映射与资源扩展：
+         * 接管核心的 meta box，其余全部走过滤器。
+         */
+        add_filter('at8_mluc_paywall_meta_box', '__return_false');
+        add_filter('at8_mluc_paywall_enabled', array($this, 'filter_enabled'), 10, 2);
+        add_filter('at8_mluc_paywall_levels', array($this, 'filter_levels'), 10, 2);
+        add_filter('at8_mluc_paywall_price', array($this, 'filter_price'), 10, 2);
+        add_filter('at8_mluc_paywall_can_purchase', array($this, 'filter_can_purchase'), 10, 3);
+        add_filter('at8_mluc_paywall_unlock_expire', array($this, 'filter_unlock_expire'), 10, 3);
+        add_filter('at8_mluc_paywall_locked_html', array($this, 'filter_locked_html'), 10, 2);
+        add_filter('at8_mluc_paywall_unlocked_html', array($this, 'filter_unlocked_html'), 10, 2);
+        // 核心写解锁记录后触发：销量 +1（核心负责发货，Pro 只统计）。
+        add_action('at8_mluc_paywall_unlocked', array($this, 'on_unlocked'), 10, 3);
     }
 
     /* ---------- 字段定义 ---------- */
@@ -71,6 +92,7 @@ class AT8_MLUCP_Paywall
     /**
      * 全部字段（name => 类型）。meta key = _at8_mlucp_pw_{name}。
      * 会员等级价动态存储：_at8_mlucp_pw_price_{level}（每个非 free 等级一个字段）。
+     * 免费阅读等级：_at8_mlucp_pw_free_levels（JSON 数组，可多选）。
      */
     public static function get_fields()
     {
@@ -80,6 +102,7 @@ class AT8_MLUCP_Paywall
             'price_sell'         => 'float',
             'price_original'     => 'float',
             'sales_offset'       => 'int',
+            'free_levels'        => 'keylist',
             'order_expire_enabled' => 'bool',
             'order_expire_value' => 'int',
             'order_expire_unit'  => 'key',
@@ -109,6 +132,7 @@ class AT8_MLUCP_Paywall
             'price_sell'           => 0,
             'price_original'       => 0,
             'sales_offset'         => 0,
+            'free_levels'          => '',
             'order_expire_enabled' => '0',
             'order_expire_value'   => 0,
             'order_expire_unit'    => 'day',
@@ -140,6 +164,120 @@ class AT8_MLUCP_Paywall
         return ('' === $val || false === $val) ? self::default_for($name) : $val;
     }
 
+    /**
+     * 免费阅读等级（多选）：这些等级的会员无需购买即可阅读全文。
+     * 只返回当前仍存在的等级，等级被删后自动失效。
+     */
+    public static function get_free_levels($post_id)
+    {
+        $raw = (string) self::get($post_id, 'free_levels', '');
+        if ('' === $raw) {
+            return array();
+        }
+        $arr = json_decode($raw, true);
+        if (!is_array($arr)) {
+            return array();
+        }
+        $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
+        $out = array();
+        foreach ($arr as $lk) {
+            $lk = sanitize_key((string) $lk);
+            if ('' !== $lk && isset($levels[$lk])) {
+                $out[] = $lk;
+            }
+        }
+        return $out;
+    }
+
+    /* ---------- 免费核心过滤器映射 ---------- */
+
+    /**
+     * at8_mluc_paywall_enabled：Pro 字段 → 核心开关。
+     * 管理员永不设闸（与历史版本一致）；兼容曾在核心盒配置过的文章。
+     */
+    public function filter_enabled($enabled, $post_id)
+    {
+        if (!self::is_pay_enabled()) {
+            return false;
+        }
+        if (current_user_can('manage_options')) {
+            return false;
+        }
+        if ('off' !== self::get($post_id, 'pay_mode')) {
+            return true;
+        }
+        return (bool) get_post_meta($post_id, '_at8_mluc_pw_on', true);
+    }
+
+    /**
+     * at8_mluc_paywall_levels：免费阅读等级（多选）+ 核心盒单等级兼容。
+     */
+    public function filter_levels($levels, $post_id)
+    {
+        $levels = is_array($levels) ? $levels : array();
+        $free = self::get_free_levels($post_id);
+        if (!empty($free)) {
+            return $free;
+        }
+        $core = (string) get_post_meta($post_id, '_at8_mluc_pw_level', true);
+        if ('' !== $core && !in_array($core, $levels, true)) {
+            $levels[] = $core;
+        }
+        return $levels;
+    }
+
+    /**
+     * at8_mluc_paywall_price：当前用户的会员价优先，否则执行价 / 核心盒价。
+     */
+    public function filter_price($price, $post_id)
+    {
+        $member = self::get_price_for_user($post_id);
+        if ($member > 0) {
+            return $member;
+        }
+        return (float) $price;
+    }
+
+    /**
+     * at8_mluc_paywall_can_purchase：购买权限（pay_auth）。
+     */
+    public function filter_can_purchase($can, $post_id, $user_id)
+    {
+        return (bool) $can && self::user_can_purchase($post_id, $user_id);
+    }
+
+    /**
+     * at8_mluc_paywall_unlock_expire：订单时效（小时 / 天 / 个月，0 = 永久）。
+     */
+    public function filter_unlock_expire($expires, $post_id, $user_id)
+    {
+        return self::get_unlock_expire($post_id);
+    }
+
+    /**
+     * at8_mluc_paywall_locked_html：富卡片替换核心简卡。
+     */
+    public function filter_locked_html($card, $post_id)
+    {
+        return self::render_locked($post_id);
+    }
+
+    /**
+     * at8_mluc_paywall_unlocked_html：解锁后追加资源区块。
+     */
+    public function filter_unlocked_html($extra, $post_id)
+    {
+        return $extra . self::render_pay_resource($post_id);
+    }
+
+    /**
+     * at8_mluc_paywall_unlocked：核心写完解锁记录后销量 +1。
+     */
+    public function on_unlocked($post_id, $user_id, $expires)
+    {
+        self::bump_sales($post_id);
+    }
+
     /* ---------- 开关与判定 ---------- */
 
     public static function is_pay_enabled()
@@ -148,23 +286,17 @@ class AT8_MLUCP_Paywall
     }
 
     /**
-     * 文章是否启用付费墙（pay_mode != off 且总开关开启）。
+     * 文章是否启用付费墙：委托免费核心（唯一的闸门）。
+     * 核心经 at8_mluc_paywall_enabled 过滤器读 Pro 的 pay_mode 字段。
      */
     public static function is_paywalled($post_id)
     {
-        $post_id = (int) $post_id;
-        if ($post_id <= 0 || !self::is_pay_enabled()) {
-            return false;
-        }
-        $type = get_post_type($post_id);
-        if (!in_array($type, array('post', 'page'), true)) {
-            return false;
-        }
-        return 'off' !== self::get($post_id, 'pay_mode');
+        return class_exists('AT8_MLUC_Paywall') ? AT8_MLUC_Paywall::is_paywalled($post_id) : false;
     }
 
     /**
      * 当前用户是否已解锁（管理员永远可见）。
+     * 解锁记录由免费核心写入（user meta at8_mluc_pay_unlocks），此处只读。
      */
     public static function is_unlocked($post_id, $user_id = 0)
     {
@@ -237,83 +369,8 @@ class AT8_MLUCP_Paywall
     /* ---------- 解锁 ---------- */
 
     /**
-     * 记录解锁。expire_ts=0 表示永久。
-     */
-    public static function grant_unlock($post_id, $user_id, $expire_ts = 0)
-    {
-        $user_id = (int) $user_id;
-        $post_id = (int) $post_id;
-        if (!$user_id || !$post_id) {
-            return false;
-        }
-        $unlocks = get_user_meta($user_id, self::UNLOCK_META, true);
-        if (!is_array($unlocks)) {
-            $unlocks = array();
-        }
-        $unlocks[$post_id] = (int) $expire_ts;
-        update_user_meta($user_id, self::UNLOCK_META, $unlocks);
-        self::bump_sales($post_id);
-        do_action('at8_mlucp_pw_unlocked', $post_id, $user_id, $expire_ts);
-        return true;
-    }
-
-    /**
-     * 订单完成入口（免费插件 AT8_MLUC_Payments::complete_order 的 paywall 分支）。
-     * 原子抢占：单条 UPDATE 仅在仍为 pending 时置为 paid，回跳与 webhook 并发时只有一个胜出。
-     *
-     * @param bool $handled   前一个过滤器是否已处理。
-     * @param int  $order_id  订单 ID。
-     * @param int  $user_id   买家。
-     * @return bool 是否已完成交货。
-     */
-    public function complete_paywall_order($handled, $order_id, $user_id)
-    {
-        if ($handled || !class_exists('AT8_MLUC_Payments')) {
-            return (bool) $handled;
-        }
-        $order_id = (int) $order_id;
-        if (get_post_type($order_id) !== AT8_MLUC_Payments::CPT) {
-            return false;
-        }
-        global $wpdb;
-        $claimed = $wpdb->query($wpdb->prepare(
-            "UPDATE {$wpdb->postmeta} SET meta_value = 'paid' WHERE post_id = %d AND meta_key = '_at8_mluc_pay_status' AND meta_value = 'pending'",
-            $order_id
-        ));
-        if (!$claimed) {
-            return false;
-        }
-        clean_post_cache($order_id);
-        if (!self::grant_for_order($order_id)) {
-            // 交货失败回滚状态，允许后续重试。
-            update_post_meta($order_id, '_at8_mluc_pay_status', 'pending');
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 订单完成入口（由 AT8_MLUC_Payments::complete_order 在 paywall 类型时调用）。
-     * 幂等：同一订单只发一次货。
-     */
-    public static function grant_for_order($order_id)
-    {
-        $order_id = (int) $order_id;
-        if (get_post_meta($order_id, '_at8_mlucp_pw_granted', true)) {
-            return true;
-        }
-        $post_id = (int) get_post_meta($order_id, '_at8_mluc_pay_post', true);
-        $user_id = (int) get_post_meta($order_id, '_at8_mluc_pay_user', true);
-        if (!$post_id || !$user_id) {
-            return false;
-        }
-        self::grant_unlock($post_id, $user_id, self::get_unlock_expire($post_id));
-        update_post_meta($order_id, '_at8_mlucp_pw_granted', current_time('mysql'));
-        return true;
-    }
-
-    /**
      * 根据订单时效设置计算解锁过期时间戳（0 = 永久）。
+     * 供 at8_mluc_paywall_unlock_expire 过滤器使用。
      */
     public static function get_unlock_expire($post_id)
     {
@@ -345,41 +402,11 @@ class AT8_MLUCP_Paywall
 
     /* ---------- 正文拦截 ---------- */
 
-    public function filter_content($content)
-    {
-        if (is_admin() || !self::is_pay_enabled()) {
-            return $content;
-        }
-        // Feed：未经认证的订阅源绝不携带付费正文（无登录态，恒为锁定）。
-        if (is_feed()) {
-            $post_id = (int) get_the_ID();
-            if ($post_id > 0 && self::is_paywalled($post_id)) {
-                return '';
-            }
-            return $content;
-        }
-        // 非 singular 上下文（搜索/归档的摘要生成等）：付费正文一律不给。
-        // REST 上下文 get_the_ID() 为 0，由 rest_prepare() 单独封堵。
-        if (!is_singular(array('post', 'page'))) {
-            $post_id = (int) get_the_ID();
-            if ($post_id > 0 && self::is_paywalled($post_id)) {
-                return '';
-            }
-            return $content;
-        }
-        $post_id = (int) get_the_ID();
-        if ($post_id <= 0 || !self::is_paywalled($post_id)) {
-            return $content;
-        }
-        if (self::is_unlocked($post_id)) {
-            return $content . self::render_pay_resource($post_id);
-        }
-        // 未解锁：摘要（有手动摘要时）+ 付费墙卡片，替换整段正文（与商城版一致）。
-        $teaser = has_excerpt($post_id)
-            ? '<p class="at8-mlucp-pw-teaser">' . esc_html(get_the_excerpt($post_id)) . '</p>'
-            : '';
-        return $teaser . self::render_locked($post_id);
-    }
+    /*
+     * 1.5.0 起 the_content 闸门由免费核心负责（AT8_MLUC_Paywall::filter_content），
+     * Pro 只经 at8_mluc_paywall_locked_html / at8_mluc_paywall_unlocked_html
+     * 两个过滤器注入富卡片与资源区块，不再自建正文过滤器。
+     */
 
     /**
      * REST API：付费且未解锁的文章，content.rendered 置空并标记 protected。
@@ -825,6 +852,9 @@ class AT8_MLUCP_Paywall
         );
         $cfg = wp_json_encode($data);
         $sdk_tag = $sdk ? '<script src="' . esc_url($sdk) . '" data-partner-attribution-id="moonlight_user_center"></script>' : '';
+        // 返回而非直接输出：锁定卡现在经 at8_mluc_paywall_locked_html 过滤器
+        // 交回核心，echo 会让脚本脱序跑到卡片外面。
+        ob_start();
         ?>
         <?php echo $sdk_tag; // phpcs:ignore WordPress.Security.EscapeOutput ?>
         <script>
@@ -920,6 +950,7 @@ class AT8_MLUCP_Paywall
         })();
         </script>
         <?php
+        return ob_get_clean();
     }
 
     /* ---------- AJAX 解锁 ---------- */
@@ -1058,6 +1089,9 @@ class AT8_MLUCP_Paywall
             );
         }
 
+        // 免费阅读等级（多选，已过滤掉不存在的等级）
+        $free_levels = self::get_free_levels($post->ID);
+
         // 文件信息键值对
         $attrs_pairs = array();
         if (!empty($data['download_attrs'])) {
@@ -1155,6 +1189,20 @@ class AT8_MLUCP_Paywall
             if ('bool' === $ftype) {
                 $val = (isset($_POST['at8_mlucp_pw_' . $name]) && $_POST['at8_mlucp_pw_' . $name]) ? '1' : '0';
                 update_post_meta($post_id, $key, $val);
+                continue;
+            }
+            if ('keylist' === $ftype) {
+                // 多选等级（free_levels）：只保留仍存在的等级。
+                $raw = isset($_POST['at8_mlucp_pw_' . $name]) ? (array) wp_unslash($_POST['at8_mlucp_pw_' . $name]) : array();
+                $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
+                $vals = array();
+                foreach ($raw as $lk) {
+                    $lk = sanitize_key((string) $lk);
+                    if ('' !== $lk && isset($levels[$lk])) {
+                        $vals[] = $lk;
+                    }
+                }
+                update_post_meta($post_id, $key, wp_slash(wp_json_encode(array_values(array_unique($vals)))));
                 continue;
             }
             if (!isset($_POST['at8_mlucp_pw_' . $name])) {

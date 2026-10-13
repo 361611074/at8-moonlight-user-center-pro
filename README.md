@@ -2,7 +2,7 @@
 
 「AT8 Moonlight User Center」（Free 版）的商业化扩展插件。本仓库即插件根目录，上传后作为**独立插件**在 WordPress 后台启用；需先安装并启用 Free 版。
 
-- 版本：1.4.0
+- 版本：1.5.0
 - 授权：GPL-2.0-or-later
 - 依赖：**必须先安装并启用** AT8 Moonlight User Center（Free 版）2.3.0+
 - 作者：漫步白月光 · https://www.at8.fun/

@@ -3,7 +3,7 @@
  * Plugin Name:       AT8 Moonlight User Center Pro
  * Plugin URI:        https://www.at8.fun/
  * Description:       Commercial add-on for AT8 Moonlight User Center: online payments (PayPal, Stripe), paywall, demo videos, downloadable materials, purchases and a raised membership level cap. The user center core, social login, hidden content basics, offline payments and Elementor widgets live in the free plugin. Requires the free plugin to be active.
- * Version:          1.4.0
+ * Version:          1.5.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            漫步白月光
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * __DIR__ (never to a shared constant), so a constant defined elsewhere can
  * never redirect this plugin's class loading.
  */
-define( 'AT8_MLUCP_VERSION', '1.4.0' );
+define( 'AT8_MLUCP_VERSION', '1.5.0' );
 define( 'AT8_MLUCP_PLUGIN_FILE', __FILE__ );
 define( 'AT8_MLUCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AT8_MLUCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -100,6 +100,27 @@ function at8_mlucp_bootstrap() {
 		return;
 	}
 
+	/*
+	 * The paywall module (1.5.0) runs on the free plugin's paywall core
+	 * extension surface, which only exists from 2.4.1 on. An older core
+	 * would silently drop the gate, so refuse to boot the paid modules.
+	 */
+	if ( version_compare( AT8_MLUC_VERSION, '2.4.1', '<' ) ) {
+		add_action(
+			'admin_notices',
+			function () {
+				if ( ! current_user_can( 'activate_plugins' ) ) {
+					return;
+				}
+				printf(
+					'<div class="notice notice-error"><p>%s</p></div>',
+					esc_html__( 'AT8 Moonlight User Center Pro 1.5.0 requires the free plugin AT8 Moonlight User Center 2.4.1 or newer. Please update the free plugin first.', 'at8-moonlight-user-center-pro' )
+				);
+			}
+		);
+		return;
+	}
+
 	// License handling lives in the embedded SDK: it registers its own
 	// activation screen (mounted under the free plugin's menu), the daily
 	// re-check cron and the license-gated updater. This must run before any
@@ -154,13 +175,6 @@ function at8_mlucp_bootstrap() {
 
 	// Pro lifts the free plugin's membership level cap (3 → 8) so the level
 	// editor in the shared settings screen accepts more tiers.
-	add_filter(
-		'at8_mluc_membership_level_limit',
-		function () {
-			return 8;
-		}
-	);
-
 	add_filter(
 		'at8_mluc_membership_level_limit',
 		function () {

@@ -137,6 +137,19 @@ if (!defined('ABSPATH')) {
         </div>
 
         <div class="ml-pm-group" data-show="read,download,image,video">
+            <p class="ml-pm-title">免费阅读等级</p>
+            <p class="ml-pm-note" style="margin-top:0;">勾选后，对应等级会员无需购买即可阅读全文（可多选）。与「会员价」叠加：既设了免费等级又设了会员价时，免费等级优先生效。</p>
+            <select name="at8_mlucp_pw_free_levels[]" multiple size="4" style="width:100%;max-width:340px;">
+                <?php foreach ($levels as $lk => $lv) : ?>
+                    <?php if ('free' === $lk) { continue; } ?>
+                    <option value="<?php echo esc_attr($lk); ?>" <?php echo in_array($lk, $free_levels, true) ? 'selected' : ''; ?>>
+                        <?php echo esc_html(isset($lv['label']) ? (string) $lv['label'] : $lk); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="ml-pm-group" data-show="read,download,image,video">
             <p class="ml-pm-title">销售浮动</p>
             <div class="ml-pm-row">
                 <label for="at8_mlucp_pw_sales_offset">销量基数偏移</label>
