@@ -6,6 +6,11 @@
  * （at8_mluc_hide_types / at8_mluc_hide_user_can_view / at8_mluc_hide_cta_html），
  * 前台短码统一为 [at8_mluc_hide]。
  *
+ * 1.5.0 起会员闸统一走免费核心的等级 API（AT8_MLUC_Membership::
+ * user_can_access）：最低等级可在设置里改（选项 hide_min_level，默认
+ * monthly），不再硬编码等级键、也不再自带一份 sort_order 兜底表；
+ * 配置的等级被删时闸门保持关闭（拒绝），绝不退回"全员放行"。
+ *
  * 兼容：1.0.x 的 [at8_mlucp_hide] 短码名与旧文章内容继续可用（别名 +
  * 旧内容过滤），无需批量替换。
  *
@@ -39,6 +44,8 @@ class AT8_MLUCP_Hidecontent
         add_filter('at8_mluc_hide_types', array($this, 'register_types'));
         add_filter('at8_mluc_hide_user_can_view', array($this, 'user_can_view'), 10, 2);
         add_filter('at8_mluc_hide_cta_html', array($this, 'render_cta_html'), 10, 2);
+        // 会员闸最低等级设置（挂在 Free 设置屏的 Hidden Content 分区）。
+        add_action('at8_mluc_register_settings', array($this, 'register_settings'));
     }
 
     /**
@@ -59,12 +66,12 @@ class AT8_MLUCP_Hidecontent
     {
         switch ($type) {
             case 'vip1':
-                // 月费以上（含黄金/高级/钻石）即解锁
-                return self::is_member_at_least('monthly');
+                // 达到会员闸最低等级即解锁
+                return self::is_member_at_least();
 
             case 'payshow':
-                // 会员月费以上 或 该文章付费墙已解锁
-                if (self::is_member_at_least('monthly')) {
+                // 会员闸以上 或 该文章付费墙已解锁
+                if (self::is_member_at_least()) {
                     return true;
                 }
                 return self::is_post_paywall_unlocked();
@@ -136,32 +143,48 @@ class AT8_MLUCP_Hidecontent
         );
     }
 
-    /** 当前用户等级是否 >= $key（按 sort_order 比较）。 */
-    private static function is_member_at_least($key)
+    /**
+     * 会员闸最低等级（vip1 / payshow 共用）。
+     *
+     * 选项 hide_min_level（默认 monthly）+ at8_mlucp_hide_min_level 过滤器；
+     * 只返回当前仍存在的等级，被删后返回 ''——闸门保持关闭。
+     */
+    public static function min_level()
     {
-        if (!is_user_logged_in()) {
+        $key = sanitize_key((string) at8_mlucp_get_option('hide_min_level', 'monthly'));
+        if ('' === $key) {
+            $key = 'monthly';
+        }
+        /**
+         * Filters the minimum membership level the Pro hidden-content gate asks for.
+         *
+         * @since 1.5.0
+         *
+         * @param string $key Level slug.
+         */
+        $key = sanitize_key((string) apply_filters('at8_mlucp_hide_min_level', $key));
+        $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
+        return isset($levels[$key]) ? $key : '';
+    }
+
+    /**
+     * 当前用户是否达到会员闸最低等级。
+     *
+     * 判定统一委托免费核心（user_can_access：按 sort_order 比较），
+     * 最低等级不存在时拒绝（历史上的硬编码 sort_order 兜底会误放行）。
+     *
+     * @param string $key 指定等级；留空用设置里的最低等级。
+     */
+    private static function is_member_at_least($key = '')
+    {
+        if (!is_user_logged_in() || !class_exists('AT8_MLUC_Membership')) {
             return false;
         }
-        if (!function_exists('at8_mlucp_user_level')) {
+        $key = $key ? sanitize_key($key) : self::min_level();
+        if ('' === $key) {
             return false;
         }
-        $levels = method_exists('AT8_MLUC_Membership', 'get_levels')
-            ? AT8_MLUC_Membership::get_levels()
-            : array();
-        if (empty($levels)) {
-            // 工厂默认：monthly sort_order=20
-            $levels = array(
-                'free'    => array('sort_order' => 10),
-                'monthly' => array('sort_order' => 20),
-                'gold'    => array('sort_order' => 25),
-                'premium' => array('sort_order' => 30),
-                'diamond' => array('sort_order' => 35),
-            );
-        }
-        $cur = (string) at8_mlucp_user_level(get_current_user_id());
-        $cur_order = isset($levels[$cur]['sort_order']) ? (int) $levels[$cur]['sort_order'] : 10;
-        $min_order = isset($levels[$key]['sort_order']) ? (int) $levels[$key]['sort_order'] : 20;
-        return $cur_order >= $min_order;
+        return AT8_MLUC_Membership::user_can_access($key, get_current_user_id());
     }
 
     /** 当前文章（若有）Pro 付费墙是否已为当前用户解锁。 */
@@ -179,5 +202,65 @@ class AT8_MLUCP_Hidecontent
             return false;
         }
         return AT8_MLUCP_Paywall::is_unlocked($post_id);
+    }
+
+    /* ---------- 设置：会员闸最低等级 ---------- */
+
+    /**
+     * 在 Free 设置屏注册 Hidden Content 分区。
+     */
+    public function register_settings()
+    {
+        if (!class_exists('AT8_MLUC_Settings')) {
+            return;
+        }
+        $page = AT8_MLUC_Settings::PAGE;
+
+        add_settings_section(
+            'at8_mlucp_hidecontent',
+            __('Hidden Content', 'at8-moonlight-user-center-pro'),
+            array($this, 'section_hidecontent'),
+            $page
+        );
+
+        add_settings_field(
+            'at8_mlucp_hidecontent',
+            __('Members-only gate', 'at8-moonlight-user-center-pro'),
+            array($this, 'render_min_level_field'),
+            $page,
+            'at8_mlucp_hidecontent'
+        );
+    }
+
+    /**
+     * 分区说明。
+     */
+    public function section_hidecontent()
+    {
+        echo '<p class="description">' . esc_html__('The [at8_mluc_hide] shortcode covers logged-in readers, commenters and members. This sets the membership level the members-only and purchase-to-view types ask for.', 'at8-moonlight-user-center-pro') . '</p>';
+    }
+
+    /**
+     * 渲染最低等级选择框。
+     */
+    public function render_min_level_field()
+    {
+        $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
+        $current = (string) at8_mlucp_get_option('hide_min_level', 'monthly');
+        $valid = self::min_level();
+        if ('' !== $current && '' === $valid) {
+            printf('<p class="description">%s</p>', esc_html__('The configured level no longer exists, so the gate stays closed for everyone. Pick a level below.', 'at8-moonlight-user-center-pro'));
+        }
+        ?>
+        <select id="at8_mlucp_hide_min_level" name="at8_mlucp_options[hide_min_level]">
+            <?php foreach ($levels as $lk => $lv) : ?>
+                <?php if ('free' === $lk) { continue; } ?>
+                <option value="<?php echo esc_attr($lk); ?>" <?php selected($current, $lk); ?>>
+                    <?php echo esc_html(isset($lv['label']) ? (string) $lv['label'] : $lk); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <p class="description"><?php esc_html__('Members of this level and above see members-only content without paying.', 'at8-moonlight-user-center-pro'); ?></p>
+        <?php
     }
 }

@@ -129,8 +129,9 @@ class AT8_MLUCP_Settings {
 	/**
 	 * Sanitize the submitted options.
 	 *
-	 * Only the online gateway keys are managed here; every other key of the
-	 * Pro option blob (videos, materials, paywall) is preserved as stored.
+	 * The online gateway keys and the hidden-content gate are managed here;
+	 * every other key of the Pro option blob (videos, materials, paywall) is
+	 * preserved as stored.
 	 *
 	 * @param mixed $input Raw submitted value.
 	 * @return array Sanitized options.
@@ -150,6 +151,9 @@ class AT8_MLUCP_Settings {
 		$options['stripe_pk']             = isset( $input['stripe_pk'] ) ? sanitize_text_field( wp_unslash( $input['stripe_pk'] ) ) : '';
 		$options['stripe_sk']             = isset( $input['stripe_sk'] ) ? sanitize_text_field( wp_unslash( $input['stripe_sk'] ) ) : '';
 		$options['stripe_webhook_secret'] = isset( $input['stripe_webhook_secret'] ) ? sanitize_text_field( wp_unslash( $input['stripe_webhook_secret'] ) ) : '';
+
+		// Hidden-content gate: the minimum level the members-only types ask for.
+		$options['hide_min_level'] = isset( $input['hide_min_level'] ) ? sanitize_key( wp_unslash( $input['hide_min_level'] ) ) : 'monthly';
 
 		return $options;
 	}

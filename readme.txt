@@ -57,6 +57,7 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 * New: free-read levels are now a multi-select. Tick the membership levels that read a post for free; the core gate opens for any of them, on top of the existing per-level member prices.
 * New: Pro takes over the paywall meta box (the free plugin's plain Paywall box steps aside through the `at8_mluc_paywall_meta_box` filter), so one box carries mode, price, member prices, free levels, purchase permission, order expiry and the mode resources.
 * Improved: the locked card and the download / gallery / video blocks are injected through the core's HTML filters, so feeds, REST responses and the teaser behaviour all follow the core.
+* Improved: the members-only hidden-content gate (`[at8_mluc_hide type="vip1"]` / `payshow`) now runs on the free plugin's level API with a configurable minimum level (User Center → Settings → Hidden Content, default Monthly). Deleting that level closes the gate for everyone instead of silently opening it.
 * Fixed: the inline purchase script is returned instead of printed, so it can no longer land outside the card.
 
 = 1.4.0 =
