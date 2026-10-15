@@ -29,7 +29,6 @@ class AT8_MLUCP_Activator {
 			'pay_currency_symbol'     => '$',
 			'pay_manual_instructions' => '',
 			'order_auto_close_hours'  => 72,
-			'membership_levels'       => array(),
 			'hide_min_level'          => 'monthly',
 		);
 	}

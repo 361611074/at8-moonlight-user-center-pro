@@ -2,9 +2,9 @@
 
 「AT8 Moonlight User Center」（Free 版）的商业化扩展插件。本仓库即插件根目录，上传后作为**独立插件**在 WordPress 后台启用；需先安装并启用 Free 版。
 
-- 版本：1.6.0
+- 版本：1.6.1
 - 授权：GPL-2.0-or-later
-- 依赖：**必须先安装并启用** AT8 Moonlight User Center（Free 版）2.3.0+
+- 依赖：**必须先安装并启用** AT8 Moonlight User Center（Free 版）2.5.0+
 - 作者：漫步白月光 · https://www.at8.fun/
 
 ## Pro 功能
@@ -40,7 +40,7 @@
 
 ## 与 Free 的边界
 
-- Pro 只通过 Free 的公开钩子交互：`at8_mluc_account_tabs`（挂 tab）、`at8_mluc_is_pro`（授权总开关）、`at8_mluc_admin_menu`（**推荐的后台菜单挂载点**，保证 `add_submenu_page()` 算出正确的 page hook）、`at8_mluc_register_settings` / `at8_mluc_settings_extra_fields`（在 Free 设置屏上渲染自己的分区）、`at8_mluc_payment_gateways` / `at8_mluc_payment_order_response`（在线网关）、`at8_mluc_complete_paywall_order`（付费墙交货）、`at8_mluc_membership_level_limit`（等级上限 3 → 8）、`at8_mluc_limit_avatar_count`（头像 12 → 无限）、`at8_mluc_limit_gateway_count`（网关 1 → 3）、`at8_mluc_upgrade_features` / `at8_mluc_shortcode_reference`（校正 Free 设置屏上的对比表与短码速查）。
+- Pro 只通过 Free 的公开钩子交互：`at8_mluc_account_tabs`（挂 tab）、`at8_mluc_is_pro`（授权总开关）、`at8_mluc_admin_menu`（**推荐的后台菜单挂载点**，保证 `add_submenu_page()` 算出正确的 page hook）、`at8_mluc_register_settings` / `at8_mluc_settings_extra_fields`（在 Free 设置屏上渲染自己的分区）、`at8_mluc_payment_gateways` / `at8_mluc_payment_order_response`（在线网关）、`at8_mluc_complete_paywall_order`（付费墙交货）、`at8_mluc_upgrade_features` / `at8_mluc_shortcode_reference`（校正 Free 设置屏上的对比表与短码速查）。Free 2.5.0 起免费版不再有任何人工上限，Pro 也不再有"放宽上限"类钩子（`at8_mluc_membership_level_limit` / `at8_mluc_limit_avatar_count` / `at8_mluc_limit_gateway_count` 已随 2.5.0 一并移除）。
 - Free 缺失时 Pro 只弹后台提示，不产生致命错误；授权失效时仅保留 License 页面，商业模块完全休眠。
 - 类前缀 `AT8_MLUCP_`、函数前缀 `at8_mlucp_`、选项 `at8_mlucp_options`、自有 CPT `at8_mlucp_*`、文本域 `at8-moonlight-user-center-pro`，与 Free 完全隔离，可独立启停。
 - 会员数据（`at8_mluc_membership_level` / `at8_mluc_membership_expires`）与订单（CPT `at8_mluc_order`）归 Free 所有，Pro 停用不丢数据。
@@ -51,7 +51,7 @@
 
 ## 安装
 
-1. 确认「AT8 Moonlight User Center」2.2.0+ 已启用；
+1. 确认「AT8 Moonlight User Center」2.5.0+ 已启用；
 2. 将本仓库内容上传至 `wp-content/plugins/at8-moonlight-user-center-pro/`；
 3. 启用本插件，进入「用户中心 → License（Pro）」输入授权中心签发的授权码激活；
 4. 会员等级 / 线下支付 / 订单在 Free 的「用户中心 → 设置」屏；在线网关（PayPal / Stripe）在设置屏的 Online Payment 分区。

@@ -51,6 +51,11 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 
 == Changelog ==
 
+= 1.6.1 =
+* Fixed: the Pro comparison table on the free plugin's settings screen now corrects the row keys that exist in Free 2.5.0. The previous callback still patched the removed `membership_levels` and `avatars` rows, so the gateway row silently kept its generic claim — it now names the online gateways actually configured on this site (both configured, one configured, or not configured yet).
+* Removed: a stale `membership_levels` default written to the options on activation that nothing ever read.
+* Documentation: the README boundary list no longer advertises the three ceiling-lifting filters that Free 2.5.0 deleted, and the install requirement reads 2.5.0+.
+
 = 1.6.0 =
 * Requires the free plugin 2.5.0. Pro no longer raises any free-plugin ceiling — the free plugin has no artificial caps left — so the `at8_mluc_membership_level_limit`, `at8_mluc_limit_avatar_count` and `at8_mluc_limit_gateway_count` integrations are removed. Pro now contributes only what it actually adds: online gateways, tiered upgrade pricing, paywall resources, level and purchase content gates, videos, materials and the purchases shortcode.
 * Documentation no longer describes "lifting the free cap" as a selling point.

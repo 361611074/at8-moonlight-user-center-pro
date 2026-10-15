@@ -3,7 +3,7 @@
  * Plugin Name:       AT8 Moonlight User Center Pro
  * Plugin URI:        https://www.at8.fun/
  * Description:       Commercial add-on for AT8 Moonlight User Center: online payments (PayPal, Stripe), tiered upgrade pricing, paywall resources, demo videos, downloadable materials and purchase gates. The user center core, social login, hidden content basics, offline payments and Elementor widgets live in the free plugin. Requires the free plugin to be active.
- * Version:          1.6.0
+ * Version:          1.6.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            漫步白月光
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * __DIR__ (never to a shared constant), so a constant defined elsewhere can
  * never redirect this plugin's class loading.
  */
-define( 'AT8_MLUCP_VERSION', '1.6.0' );
+define( 'AT8_MLUCP_VERSION', '1.6.1' );
 define( 'AT8_MLUCP_PLUGIN_FILE', __FILE__ );
 define( 'AT8_MLUCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AT8_MLUCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -112,10 +112,17 @@ function at8_mlucp_bootstrap() {
 				if ( ! current_user_can( 'activate_plugins' ) ) {
 					return;
 				}
-				printf(
-					'<div class="notice notice-error"><p>%s</p></div>',
-					esc_html__( 'AT8 Moonlight User Center Pro 1.6.0 requires the free plugin AT8 Moonlight User Center 2.5.0 or newer. Please update the free plugin first.', 'at8-moonlight-user-center-pro' )
-				);
+			printf(
+				'<div class="notice notice-error"><p>%s</p></div>',
+				esc_html(
+					sprintf(
+						/* translators: 1: Pro version, 2: required free-plugin version. */
+						__( 'AT8 Moonlight User Center Pro %1$s requires the free plugin AT8 Moonlight User Center %2$s or newer. Please update the free plugin first.', 'at8-moonlight-user-center-pro' ),
+						AT8_MLUCP_VERSION,
+						'2.5.0'
+					)
+				)
+			);
 			}
 		);
 		return;
@@ -187,7 +194,7 @@ function at8_mlucp_bootstrap() {
 	// Document Pro-only shortcodes in the shared cheat sheet.
 	add_filter( 'at8_mluc_shortcode_reference', 'at8_mlucp_shortcode_reference' );
 
-	// Keep the upgrade table honest once the licence has raised the limits.
+	// Keep the upgrade table honest about what this installation really offers.
 	add_filter( 'at8_mluc_upgrade_features', 'at8_mlucp_upgrade_features' );
 }
 
@@ -233,6 +240,11 @@ function at8_mlucp_shortcode_reference( $rows ) {
 /**
  * Refresh the "Pro" column with what this installation can really do.
  *
+ * Since Free 2.5.0 removed every artificial cap there are no ceilings
+ * left to lift, so the only row that depends on this site's setup is the
+ * gateway row: it names the online gateways that are actually configured
+ * instead of repeating a fixed claim.
+ *
  * @param array<string, array<string, string>> $features Comparison rows.
  * @return array<string, array<string, string>>
  */
@@ -241,18 +253,34 @@ function at8_mlucp_upgrade_features( $features ) {
 		return $features;
 	}
 
-	$unlimited = __( 'Unlimited', 'at8-moonlight-user-center-pro' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+	$domain = 'at8-moonlight-user-center-pro';
+	$online = array();
 
-	if ( isset( $features['membership_levels'] ) ) {
-		$features['membership_levels']['pro'] = sprintf(
-			/* translators: %d: number of membership levels. */
-			__( 'Up to %d', 'at8-moonlight-user-center-pro' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
-			8
-		);
+	if ( class_exists( 'AT8_MLUCP_PayPal' ) && AT8_MLUCP_PayPal::enabled() ) {
+		$online[] = __( 'PayPal', $domain ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- intentional: strings belong to the Pro text domain.
 	}
 
-	if ( isset( $features['avatars'] ) ) {
-		$features['avatars']['pro'] = $unlimited;
+	if ( class_exists( 'AT8_MLUCP_Stripe' ) && AT8_MLUCP_Stripe::enabled() ) {
+		$online[] = __( 'Stripe', $domain ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- intentional: strings belong to the Pro text domain.
+	}
+
+	if ( ! isset( $features['gateways'] ) || ! is_array( $features['gateways'] ) ) {
+		return $features;
+	}
+
+	if ( 2 === count( $online ) ) {
+		// Both shelves are live, so the free plugin's default claim already holds.
+		return $features;
+	}
+
+	if ( $online ) {
+		$features['gateways']['pro'] = sprintf(
+			/* translators: %s: comma-separated names of the configured online gateways. */
+			__( 'Adds %s', $domain ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- intentional: strings belong to the Pro text domain.
+			implode( ', ', $online )
+		);
+	} else {
+		$features['gateways']['pro'] = __( 'Adds online gateways once they are configured', $domain ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- intentional: strings belong to the Pro text domain.
 	}
 
 	return $features;
