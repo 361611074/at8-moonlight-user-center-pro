@@ -1,8 +1,8 @@
 # Pro 安全审计报告
 
-- 日期：2026-10-13
+- 日期：2026-10-15
 - 仓库：`github.com/361611074/at8-moonlight-user-center-pro`
-- 分支 / commit：`main` @ `eef731a`（v1.6.0）
+- 分支 / commit：`main` @ `fdda40a`（v1.6.1）
 - 依赖：Free 2.5.0+（bootstrap `version_compare` 硬检查，缺失/过旧仅出管理员提示，不 Fatal）
 - 结论：商业扩展自身安全边界清晰；**不作为 WordPress.org Free 插件包提交**，站外分发。
 
