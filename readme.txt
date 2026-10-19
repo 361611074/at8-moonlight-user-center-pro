@@ -1,5 +1,5 @@
 === AT8 Moonlight User Center Pro ===
-Contributors: 361611074
+Contributors: x361611074
 Tags: membership, paywall, payments, user center
 Requires at least: 5.8
 Tested up to: 7.1
