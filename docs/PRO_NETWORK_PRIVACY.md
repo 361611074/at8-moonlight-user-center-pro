@@ -1,7 +1,7 @@
 # Pro 网络通信与隐私披露
 
 - 日期：2026-10-15
-- 仓库：`at8-moonlight-user-center-pro` @ `fdda40a`（v1.6.1）
+- 仓库：`at8-moonlight-user-center-pro` @ `236e570`（v1.6.2）
 - 说明：本文件列出 Pro 插件**全部**外部 HTTP 通信。Free 插件的通信（仅社交登录提供商）在 Free 仓库 `docs/FREE_PRO_BOUNDARY.md` 第 3 节披露；两部分合起来才是产品家族的全貌，Free readme 不得声称"整个产品系列无外部通信"。
 
 ## 1. 通信清单

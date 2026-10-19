@@ -2,7 +2,7 @@
 
 - 日期：2026-10-15
 - 仓库：`github.com/361611074/at8-moonlight-user-center-pro`
-- 分支 / commit：`main` @ `fdda40a`（v1.6.1）
+- 分支 / commit：`main` @ `236e570`（v1.6.2）
 - 依赖：Free 2.5.0+（bootstrap `version_compare` 硬检查，缺失/过旧仅出管理员提示，不 Fatal）
 - 结论：商业扩展自身安全边界清晰；**不作为 WordPress.org Free 插件包提交**，站外分发。
 
