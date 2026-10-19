@@ -191,6 +191,7 @@ class AT8_MLUCP_Gateways {
 		}
 
 		echo '<p class="description">' . esc_html__( 'Configured gateways appear next to bank transfer in the purchase flow. The currency code is shared and lives in Offline Payments.', 'at8-moonlight-user-center-pro' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Refunds must be issued in the PayPal or Stripe dashboard. A refunded order keeps its paid status and the access it granted is not revoked automatically — remove the level or unlock on the member\'s user profile by hand.', 'at8-moonlight-user-center-pro' ) . '</p>';
 	}
 
 	/**

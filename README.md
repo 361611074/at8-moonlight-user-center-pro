@@ -49,6 +49,14 @@
 - SDK 类前缀 `AT8SDK_` / `AT8_License_SDK`，自带 class_exists 守卫，多个 AT8 产品可并存。
 - Free 未授权、未安装的任何情况下都完整可用（登录、注册、账户中心、头像、菜单、会员销售）。
 
+## 变更记录（摘要）
+
+完整 changelog 见 `readme.txt`。
+
+- **1.6.2**：繁体文案统一为简体（素材/视频/Stripe）；metabox 输入统一 `wp_unslash`；远程文件下载重定向仅放行 http/https；readme 声明后台退款不自动回收权限；Stable tag 与发布版本对齐。
+- **1.6.1**：对比表回调适配 Free 2.5.0 行键（按本机实际网关校正）；移除死默认项与过期文档描述。
+- **1.6.0**：移除全部“放宽上限”集成（Free 2.5.0 已无任何上限），Pro 只贡献真实增量。
+
 ## 安装
 
 1. 确认「AT8 Moonlight User Center」2.5.0+ 已启用；

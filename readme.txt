@@ -57,6 +57,7 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 * Hardened: metabox nonce checks and meta fields in the materials, videos and paywall classes run through `wp_unslash()` before sanitization.
 * Hardened: the remote-file download redirect only allows http/https URLs; anything else is rejected with an error message instead of being followed.
 * Documentation: the readme states that dashboard refunds do not revoke membership or unlocks automatically, and the Stable tag now tracks the released version.
+* The Online Payment settings section tells the administrator that gateway refunds are issued in the PayPal / Stripe dashboard and never revoke access automatically.
 
 = 1.6.1 =
 * Fixed: the Pro comparison table on the free plugin's settings screen now corrects the row keys that exist in Free 2.5.0. The previous callback still patched the removed `membership_levels` and `avatars` rows, so the gateway row silently kept its generic claim — it now names the online gateways actually configured on this site (both configured, one configured, or not configured yet).

@@ -45,7 +45,7 @@
 
 | 包 | 文件数 | 大小 | SHA-256 |
 |---|---|---|---|
-| `at8-moonlight-user-center-pro-1.6.2.zip` | 41 | 123,994 B | `fa49b1fda71b30e43872dbe5e70d2ea78186d1997c82fa2f873174a37e61d105` |
+| `at8-moonlight-user-center-pro-1.6.2.zip` | 41 | 124,138 B | `56e3bd6366b8986495f14fa74a95be3cd66bc91d5be8b1e925e49c886a923bcb` |
 
 ## 6. 结论
 
