@@ -110,7 +110,7 @@ class AT8_MLUCP_Material
                 auth_redirect();
                 exit;
             }
-            wp_die(esc_html__('權限不足，無法檢視此教材。', 'at8-moonlight-user-center-pro'), 403);
+            wp_die(esc_html__('权限不足，无法检视此教材。', 'at8-moonlight-user-center-pro'), 403);
         }
     }
 
@@ -118,11 +118,11 @@ class AT8_MLUCP_Material
     {
         register_post_type(self::CPT, array(
             'labels' => array(
-                'name'          => __('工作紙 / 教材', 'at8-moonlight-user-center-pro'),
+                'name'          => __('工作纸 / 教材', 'at8-moonlight-user-center-pro'),
                 'singular_name' => __('教材', 'at8-moonlight-user-center-pro'),
                 'add_new'       => __('新建教材', 'at8-moonlight-user-center-pro'),
                 'add_new_item'  => __('新增教材', 'at8-moonlight-user-center-pro'),
-                'edit_item'     => __('編輯教材', 'at8-moonlight-user-center-pro'),
+                'edit_item'     => __('编辑教材', 'at8-moonlight-user-center-pro'),
             ),
             // 安全收敛（原 public=true + show_in_rest=true + has_archive=true，
             // 未登录访客可经 /wp-json/wp/v2/at8_mlucp_material 与归档页拿到全部高等级教材）：
@@ -151,7 +151,7 @@ class AT8_MLUCP_Material
     {
         add_meta_box(
             'at8_mlucp_material_meta',
-            __('教材設定', 'at8-moonlight-user-center-pro'),
+            __('教材设定', 'at8-moonlight-user-center-pro'),
             array($this, 'render_metabox'),
             self::CPT,
             'normal',
@@ -168,11 +168,11 @@ class AT8_MLUCP_Material
         $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
         // 普通会员关闭时 free 不在等级表中，但作为「公开内容」标记仍需出现在下拉里
         if (!isset($levels['free'])) {
-            $levels = array('free' => array('label' => __('公開（免費）', 'at8-moonlight-user-center-pro'))) + $levels;
+            $levels = array('free' => array('label' => __('公开（免费）', 'at8-moonlight-user-center-pro'))) + $levels;
         }
         ?>
         <p>
-            <label for="at8_mlucp_material_min_level"><strong><?php esc_html_e('最低訪問等級', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
+            <label for="at8_mlucp_material_min_level"><strong><?php esc_html_e('最低访问等级', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
             <select name="at8_mlucp_material_min_level" id="at8_mlucp_material_min_level" style="width:100%;max-width:300px;">
                 <?php foreach ($levels as $key => $lv) : ?>
                     <option value="<?php echo esc_attr($key); ?>"<?php selected($level, $key); ?>>
@@ -182,11 +182,11 @@ class AT8_MLUCP_Material
             </select>
         </p>
         <p>
-            <label for="at8_mlucp_material_file"><strong><?php esc_html_e('文件網址（PDF / ZIP）', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
+            <label for="at8_mlucp_material_file"><strong><?php esc_html_e('文件网址（PDF / ZIP）', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
             <input type="url" name="at8_mlucp_material_file" id="at8_mlucp_material_file" value="<?php echo esc_attr($file); ?>" style="width:100%;" placeholder="https://...">
         </p>
         <p>
-            <label for="at8_mlucp_material_download_limit"><strong><?php esc_html_e('每用戶下載次數上限（0 = 不限）', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
+            <label for="at8_mlucp_material_download_limit"><strong><?php esc_html_e('每用戶下载次数上限（0 = 不限）', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
             <input type="number" min="0" name="at8_mlucp_material_download_limit" id="at8_mlucp_material_download_limit" value="<?php echo esc_attr($limit); ?>" style="width:120px;">
         </p>
         <?php
@@ -194,7 +194,7 @@ class AT8_MLUCP_Material
 
     public function save_metabox($post_id)
     {
-        if (!isset($_POST['at8_mlucp_material_meta_nonce']) || !wp_verify_nonce($_POST['at8_mlucp_material_meta_nonce'], 'at8_mlucp_material_meta')) {
+        if (!isset($_POST['at8_mlucp_material_meta_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['at8_mlucp_material_meta_nonce'])), 'at8_mlucp_material_meta')) {
             return;
         }
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -204,10 +204,10 @@ class AT8_MLUCP_Material
             return;
         }
         if (isset($_POST['at8_mlucp_material_min_level'])) {
-            update_post_meta($post_id, self::META_LEVEL, sanitize_key($_POST['at8_mlucp_material_min_level']));
+            update_post_meta($post_id, self::META_LEVEL, sanitize_key(wp_unslash($_POST['at8_mlucp_material_min_level'])));
         }
         if (isset($_POST['at8_mlucp_material_file'])) {
-            update_post_meta($post_id, self::META_FILE, esc_url_raw($_POST['at8_mlucp_material_file']));
+            update_post_meta($post_id, self::META_FILE, esc_url_raw(wp_unslash($_POST['at8_mlucp_material_file'])));
         }
         if (isset($_POST['at8_mlucp_material_download_limit'])) {
             update_post_meta($post_id, self::META_DOWNLOAD_LIMIT, max(0, (int) $_POST['at8_mlucp_material_download_limit']));
@@ -274,11 +274,11 @@ class AT8_MLUCP_Material
                     <div class="at8-mlucp-material-excerpt"><?php the_excerpt(); ?></div>
                     <?php if ($download_url) : ?>
                         <a class="at8-mlucp-btn at8-mlucp-btn-download" href="<?php echo esc_url($download_url); ?>">
-                            <?php esc_html_e('下載 PDF / 工作紙', 'at8-moonlight-user-center-pro'); ?>
+                            <?php esc_html_e('下载 PDF / 工作纸', 'at8-moonlight-user-center-pro'); ?>
                         </a>
                     <?php else : ?>
                         <a class="at8-mlucp-btn at8-mlucp-btn-login" href="<?php echo esc_url(at8_mlucp_get_login_url(get_permalink())); ?>">
-                            <?php esc_html_e('登入後下載', 'at8-moonlight-user-center-pro'); ?>
+                            <?php esc_html_e('登入后下载', 'at8-moonlight-user-center-pro'); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -286,7 +286,7 @@ class AT8_MLUCP_Material
             }
             wp_reset_postdata();
         } else {
-            echo '<p class="at8-mlucp-empty">' . esc_html__('暫無可下載的教材。', 'at8-moonlight-user-center-pro') . '</p>';
+            echo '<p class="at8-mlucp-empty">' . esc_html__('暂无可下载的教材。', 'at8-moonlight-user-center-pro') . '</p>';
         }
         echo '</div>';
         return ob_get_clean();
@@ -299,7 +299,7 @@ class AT8_MLUCP_Material
     {
         if (!is_user_logged_in()) {
             return '<p class="at8-mlucp-message">' .
-                esc_html__('請先登入。', 'at8-moonlight-user-center-pro') .
+                esc_html__('请先登入。', 'at8-moonlight-user-center-pro') .
                 '</p>';
         }
         $query = self::query_accessible_materials(array('posts_per_page' => 50));
@@ -307,7 +307,7 @@ class AT8_MLUCP_Material
         ob_start();
         echo '<div class="at8-mlucp-downloads-list">';
         if ($query->have_posts()) {
-            echo '<div class="at8-mlucp-table-scroll"><table class="at8-mlucp-table"><thead><tr><th>' . esc_html__('教材', 'at8-moonlight-user-center-pro') . '</th><th>' . esc_html__('等級', 'at8-moonlight-user-center-pro') . '</th><th>' . esc_html__('操作', 'at8-moonlight-user-center-pro') . '</th></tr></thead><tbody>';
+            echo '<div class="at8-mlucp-table-scroll"><table class="at8-mlucp-table"><thead><tr><th>' . esc_html__('教材', 'at8-moonlight-user-center-pro') . '</th><th>' . esc_html__('等级', 'at8-moonlight-user-center-pro') . '</th><th>' . esc_html__('操作', 'at8-moonlight-user-center-pro') . '</th></tr></thead><tbody>';
             while ($query->have_posts()) {
                 $query->the_post();
                 $post_id = get_the_ID();
@@ -320,7 +320,7 @@ class AT8_MLUCP_Material
                 echo '<tr>';
                 echo '<td>' . esc_html(get_the_title()) . '</td>';
                 echo '<td><span class="at8-mlucp-level-badge at8-mlucp-level-' . esc_attr($min_lv) . '">' . esc_html($level_label) . '</span></td>';
-                echo '<td><a class="at8-mlucp-btn at8-mlucp-btn-small" href="' . esc_url($url) . '">' . esc_html__('下載', 'at8-moonlight-user-center-pro') . '</a> ';
+                echo '<td><a class="at8-mlucp-btn at8-mlucp-btn-small" href="' . esc_url($url) . '">' . esc_html__('下载', 'at8-moonlight-user-center-pro') . '</a> ';
                 echo '<span class="at8-mlucp-muted">';
                 if ($limit > 0) {
                     /* translators: 1: remaining download count, 2: total allowed downloads. */
@@ -334,7 +334,7 @@ class AT8_MLUCP_Material
             echo '</tbody></table></div>';
             wp_reset_postdata();
         } else {
-            echo '<p class="at8-mlucp-empty">' . esc_html__('暫無教材可下載。', 'at8-moonlight-user-center-pro') . '</p>';
+            echo '<p class="at8-mlucp-empty">' . esc_html__('暂无教材可下载。', 'at8-moonlight-user-center-pro') . '</p>';
         }
         echo '</div>';
         return ob_get_clean();
@@ -350,21 +350,21 @@ class AT8_MLUCP_Material
             exit;
         }
         $post_id = isset($_GET['mid']) ? (int) $_GET['mid'] : 0;
-        $nonce   = isset($_GET['_wpnonce']) ? $_GET['_wpnonce'] : '';
+        $nonce   = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
         if (!$post_id || !wp_verify_nonce($nonce, 'at8_mlucp_download_' . $post_id)) {
-            wp_die(esc_html__('安全校驗失敗。', 'at8-moonlight-user-center-pro'));
+            wp_die(esc_html__('安全校验失败。', 'at8-moonlight-user-center-pro'));
         }
         if (self::CPT !== get_post_type($post_id)) {
             wp_die(esc_html__('教材不存在。', 'at8-moonlight-user-center-pro'));
         }
         $min_lv = get_post_meta($post_id, self::META_LEVEL, true) ?: 'free';
         if (class_exists('AT8_MLUC_Membership') && !AT8_MLUC_Membership::user_can_access($min_lv)) {
-            wp_die(esc_html__('權限不足，無法下載。', 'at8-moonlight-user-center-pro'));
+            wp_die(esc_html__('权限不足，无法下载。', 'at8-moonlight-user-center-pro'));
         }
         $limit = (int) get_post_meta($post_id, self::META_DOWNLOAD_LIMIT, true);
         $used  = (int) get_user_meta(get_current_user_id(), 'at8_mlucp_material_dl_' . $post_id, true);
         if ($limit > 0 && $used >= $limit) {
-            wp_die(esc_html__('已達下載次數上限。', 'at8-moonlight-user-center-pro'));
+            wp_die(esc_html__('已达下载次数上限。', 'at8-moonlight-user-center-pro'));
         }
         $file = get_post_meta($post_id, self::META_FILE, true);
         if (!$file) {
@@ -410,8 +410,13 @@ class AT8_MLUCP_Material
             exit;
         }
 
-        // 远程文件：回退为 302 跳转（权限校验已在上方完成）。
-        wp_redirect($file, 302);
-        exit;
+        // 远程文件：回退为 302 跳转（权限校验已在上方完成）。只放行 http/https，
+        // 防止管理员误配或 meta 被篡改后把下载流量带去任意协议。
+        $target = esc_url_raw($file, array('http', 'https'));
+        if ($target) {
+            wp_redirect($target, 302);
+            exit;
+        }
+        wp_die(esc_html__('下载地址无效。', 'at8-moonlight-user-center-pro'));
     }
 }

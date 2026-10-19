@@ -104,7 +104,7 @@ class AT8_MLUCP_Video
                 auth_redirect();
                 exit;
             }
-            wp_die(esc_html__('權限不足，無法觀看此影片。', 'at8-moonlight-user-center-pro'), 403);
+            wp_die(esc_html__('权限不足，无法观看此影片。', 'at8-moonlight-user-center-pro'), 403);
         }
     }
 
@@ -116,7 +116,7 @@ class AT8_MLUCP_Video
                 'singular_name' => __('示範影片', 'at8-moonlight-user-center-pro'),
                 'add_new'       => __('新建影片', 'at8-moonlight-user-center-pro'),
                 'add_new_item'  => __('新增示範影片', 'at8-moonlight-user-center-pro'),
-                'edit_item'     => __('編輯示範影片', 'at8-moonlight-user-center-pro'),
+                'edit_item'     => __('编辑示範影片', 'at8-moonlight-user-center-pro'),
             ),
             // 安全收敛：与教材同理（关闭 REST / 归档 / 搜索收录），
             // 保留单页链接供 [at8_mlucp_videos] 卡片跳转，
@@ -141,7 +141,7 @@ class AT8_MLUCP_Video
     {
         add_meta_box(
             'at8_mlucp_video_meta',
-            __('影片設定', 'at8-moonlight-user-center-pro'),
+            __('影片设定', 'at8-moonlight-user-center-pro'),
             array($this, 'render_metabox'),
             self::CPT,
             'normal',
@@ -161,11 +161,11 @@ class AT8_MLUCP_Video
         $levels = class_exists('AT8_MLUC_Membership') ? AT8_MLUC_Membership::get_levels() : array();
         // 普通会员关闭时 free 不在等级表中，但作为「公开内容」标记仍需出现在下拉里
         if (!isset($levels['free'])) {
-            $levels = array('free' => array('label' => __('公開（免費）', 'at8-moonlight-user-center-pro'))) + $levels;
+            $levels = array('free' => array('label' => __('公开（免费）', 'at8-moonlight-user-center-pro'))) + $levels;
         }
         ?>
         <p>
-            <label for="at8_mlucp_video_min_level"><strong><?php esc_html_e('最低訪問等級', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
+            <label for="at8_mlucp_video_min_level"><strong><?php esc_html_e('最低访问等级', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
             <select name="at8_mlucp_video_min_level" id="at8_mlucp_video_min_level" style="width:100%;max-width:300px;">
                 <?php foreach ($levels as $key => $lv) : ?>
                     <option value="<?php echo esc_attr($key); ?>"<?php selected($level, $key); ?>>
@@ -179,7 +179,7 @@ class AT8_MLUCP_Video
             <input type="url" name="at8_mlucp_video_embed" id="at8_mlucp_video_embed" value="<?php echo esc_attr($embed); ?>" style="width:100%;" placeholder="https://www.youtube.com/watch?v=... 或 https://.../video.mp4">
         </p>
         <p>
-            <label for="at8_mlucp_video_thumb"><strong><?php esc_html_e('自訂縮圖網址（選填）', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
+            <label for="at8_mlucp_video_thumb"><strong><?php esc_html_e('自订缩圖网址（选填）', 'at8-moonlight-user-center-pro'); ?></strong></label><br>
             <input type="url" name="at8_mlucp_video_thumb" id="at8_mlucp_video_thumb" value="<?php echo esc_attr($thumb); ?>" style="width:100%;">
         </p>
         <?php
@@ -187,7 +187,7 @@ class AT8_MLUCP_Video
 
     public function save_metabox($post_id)
     {
-        if (!isset($_POST['at8_mlucp_video_meta_nonce']) || !wp_verify_nonce($_POST['at8_mlucp_video_meta_nonce'], 'at8_mlucp_video_meta')) {
+        if (!isset($_POST['at8_mlucp_video_meta_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['at8_mlucp_video_meta_nonce'])), 'at8_mlucp_video_meta')) {
             return;
         }
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -197,13 +197,13 @@ class AT8_MLUCP_Video
             return;
         }
         if (isset($_POST['at8_mlucp_video_min_level'])) {
-            update_post_meta($post_id, self::META_LEVEL, sanitize_key($_POST['at8_mlucp_video_min_level']));
+            update_post_meta($post_id, self::META_LEVEL, sanitize_key(wp_unslash($_POST['at8_mlucp_video_min_level'])));
         }
         if (isset($_POST['at8_mlucp_video_embed'])) {
-            update_post_meta($post_id, self::META_EMBED, esc_url_raw($_POST['at8_mlucp_video_embed']));
+            update_post_meta($post_id, self::META_EMBED, esc_url_raw(wp_unslash($_POST['at8_mlucp_video_embed'])));
         }
         if (isset($_POST['at8_mlucp_video_thumb'])) {
-            update_post_meta($post_id, self::META_THUMB, esc_url_raw($_POST['at8_mlucp_video_thumb']));
+            update_post_meta($post_id, self::META_THUMB, esc_url_raw(wp_unslash($_POST['at8_mlucp_video_thumb'])));
         }
     }
 
@@ -315,7 +315,7 @@ class AT8_MLUCP_Video
             }
             wp_reset_postdata();
         } else {
-            echo '<p class="at8-mlucp-empty">' . esc_html__('暫無可觀看的示範影片。', 'at8-moonlight-user-center-pro') . '</p>';
+            echo '<p class="at8-mlucp-empty">' . esc_html__('暂无可观看的示範影片。', 'at8-moonlight-user-center-pro') . '</p>';
         }
         echo '</div>';
         return ob_get_clean();
@@ -355,7 +355,7 @@ class AT8_MLUCP_Video
                     echo esc_html(
                         sprintf(
                             /* translators: %s: 等级名 */
-                            __('此影片需要 %s 會員等級，請升級以觀看。', 'at8-moonlight-user-center-pro'),
+                            __('此影片需要 %s 会员等级，请升级以观看。', 'at8-moonlight-user-center-pro'),
                             AT8_MLUC_Membership::get_level_label($min_level)
                         )
                     );

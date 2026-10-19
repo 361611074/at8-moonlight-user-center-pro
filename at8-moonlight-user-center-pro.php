@@ -3,7 +3,7 @@
  * Plugin Name:       AT8 Moonlight User Center Pro
  * Plugin URI:        https://www.at8.fun/
  * Description:       Commercial add-on for AT8 Moonlight User Center: online payments (PayPal, Stripe), tiered upgrade pricing, paywall resources, demo videos, downloadable materials and purchase gates. The user center core, social login, hidden content basics, offline payments and Elementor widgets live in the free plugin. Requires the free plugin to be active.
- * Version:          1.6.1
+ * Version:          1.6.2
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            漫步白月光
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * __DIR__ (never to a shared constant), so a constant defined elsewhere can
  * never redirect this plugin's class loading.
  */
-define( 'AT8_MLUCP_VERSION', '1.6.1' );
+define( 'AT8_MLUCP_VERSION', '1.6.2' );
 define( 'AT8_MLUCP_PLUGIN_FILE', __FILE__ );
 define( 'AT8_MLUCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AT8_MLUCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

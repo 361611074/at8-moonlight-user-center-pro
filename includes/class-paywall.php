@@ -1182,7 +1182,7 @@ class AT8_MLUCP_Paywall
         if (!in_array($type, array('post', 'page'), true)) {
             return;
         }
-        if (!wp_verify_nonce($_POST['at8_mlucp_pw_meta_nonce'], 'at8_mlucp_pw_meta')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['at8_mlucp_pw_meta_nonce'])), 'at8_mlucp_pw_meta')) {
             return;
         }
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {

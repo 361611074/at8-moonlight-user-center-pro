@@ -3,7 +3,7 @@ Contributors: 361611074
 Tags: membership, paywall, payments, user center
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 1.4.0
+Stable tag: 1.6.2
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -28,6 +28,7 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 * Stripe (hosted Checkout with webhook fallback)
 * Order management section on the free plugin's settings screen; order records with auto-close for abandoned pending orders
 * Purchase history in the account dashboard and the `[at8_mlucp_purchases]` shortcode
+* Refunds made in the Stripe or PayPal dashboard do not revoke membership or unlocks automatically — an administrator removes the access by hand
 
 **Content control**
 
@@ -50,6 +51,12 @@ AT8 Moonlight User Center Pro extends the free plugin with the commercial half o
 4. Configure the online gateways under User Center → Settings → Online Payment (PayPal / Stripe); membership levels, offline payments and orders live on the same screen.
 
 == Changelog ==
+
+= 1.6.2 =
+* Unified: every remaining traditional-Chinese UI string is now simplified (materials and videos permission notices, metabox labels, download button texts, one Stripe error message — 62 characters across three files). The test report's earlier "zero traditional strings" claim was wrong and has been corrected.
+* Hardened: metabox nonce checks and meta fields in the materials, videos and paywall classes run through `wp_unslash()` before sanitization.
+* Hardened: the remote-file download redirect only allows http/https URLs; anything else is rejected with an error message instead of being followed.
+* Documentation: the readme states that dashboard refunds do not revoke membership or unlocks automatically, and the Stable tag now tracks the released version.
 
 = 1.6.1 =
 * Fixed: the Pro comparison table on the free plugin's settings screen now corrects the row keys that exist in Free 2.5.0. The previous callback still patched the removed `membership_levels` and `avatars` rows, so the gateway row silently kept its generic claim — it now names the online gateways actually configured on this site (both configured, one configured, or not configured yet).

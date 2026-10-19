@@ -110,7 +110,7 @@ class AT8_MLUCP_Stripe
     {
         $session_id = sanitize_text_field($session_id);
         if ('' === $session_id || strlen($session_id) > 300) {
-            return new WP_Error('at8_mlucp_st_sid', __('無效的结账会话。', 'at8-moonlight-user-center-pro'));
+            return new WP_Error('at8_mlucp_st_sid', __('无效的结账会话。', 'at8-moonlight-user-center-pro'));
         }
         $res = wp_remote_get(self::API . '/checkout/sessions/' . rawurlencode($session_id), array(
             'timeout' => 30,
